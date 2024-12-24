@@ -1,13 +1,20 @@
 import { List, ListItem } from '~/components/list';
 import { Typography } from '~/components/ui/typography';
-import type {
-  EventPackageSection,
-} from '~/types/api';
-import { useMemo } from 'react';
+import type { EventPackage, EventPackageSection } from '~/types/api';
+import { useCallback, useMemo } from 'react';
+import { useAppDispatch } from '~/store/hooks';
+import { addPackage, removePackage } from '~/store/array-builder-slice';
 
 type Props = EventPackageSection;
 
-export function EventConfigurator({ title, description, metadata }: Props) {
+export function EventConfigurator({
+  title,
+  description,
+  metadata,
+  slug,
+}: Props) {
+  const dispatch = useAppDispatch();
+
   const groupedEvents = useMemo(() => {
     const allEvents = metadata.packages.flatMap((item) => item.events);
 
@@ -20,6 +27,19 @@ export function EventConfigurator({ title, description, metadata }: Props) {
       events: uniqueEvents.filter((event) => event.type === eventType.value),
     }));
   }, [metadata]);
+
+  const onPackageChangeHandler = useCallback(
+    (isSelected: boolean, servicePackage: EventPackage) => {
+      if (isSelected) {
+        dispatch(
+          addPackage({ slug: slug, package: servicePackage, addons: [] })
+        );
+      } else {
+        dispatch(removePackage({ slug: slug }));
+      }
+    },
+    [dispatch]
+  );
 
   return (
     <>
@@ -41,6 +61,9 @@ export function EventConfigurator({ title, description, metadata }: Props) {
                 id={element.id}
                 title={element.title}
                 hint={`${element.duration} hours`}
+                onChange={(isSelected) => {
+                  onPackageChangeHandler(isSelected, element);
+                }}
               />
             ))}
           </List>

@@ -1,21 +1,22 @@
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { List, ListItem } from '~/components/list';
 import { Typography } from '~/components/ui/typography';
 import { formatCurrency } from '~/lib/format';
 import {
   addAddon,
-  addBundle,
+  addPackage,
   removeAddon,
-  removeBundle,
-} from '~/store/builder-slice';
+  removePackage,
+} from '~/store/array-builder-slice';
 import { useAppDispatch, useAppSelector } from '~/store/hooks';
 import type {
+  Section,
   Service,
   ServicePackage,
   ServicePackageSection,
 } from '~/types/api';
 
-type Props = ServicePackageSection & { slug: 'photography' | 'cinematography' };
+type Props = ServicePackageSection & { slug: Section['slug'] };
 
 export function PackageConfigurator({
   title,
@@ -24,11 +25,9 @@ export function PackageConfigurator({
   metadata,
 }: Props) {
   const bundle = useAppSelector(
-    (state) => state.builder.configuration[slug].package
+    (state) => state.arrayBuilder.configs[slug]?.package
   );
-  const photography = useAppSelector(
-    (state) => state.builder.configuration.photography
-  );
+
   const dispatch = useAppDispatch();
 
   const addons = useMemo(() => {
@@ -43,9 +42,11 @@ export function PackageConfigurator({
   const onPackageChangeHandler = useCallback(
     (isSelected: boolean, servicePackage: ServicePackage) => {
       if (isSelected) {
-        dispatch(addBundle(servicePackage));
+        dispatch(
+          addPackage({ slug: slug, package: servicePackage, addons: [] })
+        );
       } else {
-        dispatch(removeBundle());
+        dispatch(removePackage({ slug: slug }));
       }
     },
     [dispatch]
@@ -54,17 +55,13 @@ export function PackageConfigurator({
   const onAddonChangeHandler = useCallback(
     (isSelected: boolean, service: Service) => {
       if (isSelected) {
-        dispatch(addAddon(service));
+        dispatch(addAddon({ slug: slug, addon: service }));
       } else {
-        dispatch(removeAddon(service));
+        dispatch(removeAddon({ slug: slug, addon: service }));
       }
     },
     [dispatch]
   );
-
-  useEffect(() => {
-    console.log(photography);
-  }, [photography]);
 
   return (
     <>

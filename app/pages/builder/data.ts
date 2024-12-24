@@ -272,7 +272,7 @@ export const data = {
       id: 1,
       type: 'event',
       title: 'Build Your Coverage',
-      slug: 'event-package',
+      slug: 'event',
       description:
         'Select the events you want us to capture, from pre-wedding celebrations to your big day',
       coverUrl:
@@ -334,47 +334,6 @@ export const data = {
           },
         ],
       } as EventPackageMetadata,
-      // {
-      //   id: 2,
-      //   title: 'Customize your Coverage',
-      //   description: undefined,
-      //   type: 'badge',
-      //   elements: [
-      //     {
-      //       id: 1,
-      //       title: 'Wedding Ceremony',
-      //       duration: 18,
-      //     } as Event,
-      //     {
-      //       id: 2,
-      //       title: 'Reception Celebration',
-      //       duration: 18,
-      //     } as Event,
-      //   ] as Event[],
-      // } as Subsection<Event>,
-      // {
-      //   id: 3,
-      //   title: 'Ceremony Types',
-      //   description: undefined,
-      //   type: 'badge',
-      //   elements: [
-      //     {
-      //       id: 3,
-      //       title: 'Sungeet',
-      //       duration: 6,
-      //     } as Event,
-      //     {
-      //       id: 4,
-      //       title: 'Pithi',
-      //       duration: 6,
-      //     },
-      //     {
-      //       id: 5,
-      //       title: 'Mehndi',
-      //       duration: 6,
-      //     },
-      //   ] as Event[],
-      // } as Subsection<Event>,
     } as Section,
     {
       id: 2,
@@ -387,7 +346,6 @@ export const data = {
       metadata: {
         id: 4,
         title: undefined,
-        // type: 'tile',
         packages: [
           {
             id: 1,

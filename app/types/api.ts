@@ -13,7 +13,7 @@ export type EventPackageSection = {
   id: number;
   title: string;
   description?: string;
-  slug: string;
+  slug: 'event';
   type: 'event';
   metadata: EventPackageMetadata;
 };
@@ -50,6 +50,8 @@ export type Service = {
   description?: string;
   price: number;
 };
+
+export type Addon = Service;
 
 export type EventPackageMetadata = {
   id: number;
