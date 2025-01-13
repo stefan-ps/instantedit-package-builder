@@ -3,9 +3,7 @@ import type { Route } from './+types/home';
 import { data } from '~/pages/builder/data';
 import { BuilderProvider } from '~/providers/builder-provider';
 
-export async function loader() {
-  return data;
-}
+
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -14,9 +12,9 @@ export function meta({}: Route.MetaArgs) {
   ];
 }
 
-export default function Home({ loaderData }: Route.ComponentProps) {
+export default function Home() {
   return (
-    <BuilderProvider sections={loaderData.sections}>
+    <BuilderProvider sections={data.sections}>
       <Builder />
     </BuilderProvider>
   );
