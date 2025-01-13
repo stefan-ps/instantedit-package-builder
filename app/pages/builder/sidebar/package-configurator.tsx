@@ -1,13 +1,13 @@
 import { useCallback, useMemo } from 'react';
-import { List, ListItem } from '~/components/list';
 import { Typography } from '~/components/ui/typography';
 import { formatCurrency } from '~/lib/format';
+import { cn } from '~/lib/utils';
 import {
   addAddon,
   addPackage,
   removeAddon,
   removePackage,
-} from '~/store/array-builder-slice';
+} from '~/store/builder-slice';
 import { useAppDispatch, useAppSelector } from '~/store/hooks';
 import type {
   Section,
@@ -24,9 +24,7 @@ export function PackageConfigurator({
   slug,
   metadata,
 }: Props) {
-  const bundle = useAppSelector(
-    (state) => state.arrayBuilder.configs[slug]?.package
-  );
+  const config = useAppSelector((state) => state.builder.configs[slug]);
 
   const dispatch = useAppDispatch();
 
@@ -34,33 +32,69 @@ export function PackageConfigurator({
     return [
       ...(metadata.addons ?? []),
       ...(metadata.packages.find(
-        (servicePackage) => servicePackage.id === bundle?.id
+        (servicePackage) => servicePackage.id === config?.package?.id
       )?.addons ?? []),
     ];
-  }, [bundle]);
+  }, [config]);
 
-  const onPackageChangeHandler = useCallback(
-    (isSelected: boolean, servicePackage: ServicePackage) => {
-      if (isSelected) {
-        dispatch(
-          addPackage({ slug: slug, package: servicePackage, addons: [] })
-        );
-      } else {
-        dispatch(removePackage({ slug: slug }));
-      }
-    },
-    [dispatch]
+  const addonsList = useMemo(
+    () => (
+      <>
+        <ul className={cn('flex flex-col gap-2')}>
+          {addons.map((element) => (
+            <li
+              key={element.id}
+              className={cn(
+                'flex flex-col gap-3 border-2 rounded bg-white px-4 py-3 hover:bg-primary/10 hover:border-primary/10',
+                {
+                  'border-primary text-primary bg-primary/20':
+                    config?.addons?.find((addon) => addon.id === element.id),
+                }
+              )}
+              onClick={() => onAddonClickHandler(element)}
+            >
+              <div className='flex flex-row justify-between items-center'>
+                <Typography>{element.title}</Typography>
+                {element.price && (
+                  <Typography variant={'small'} appearance={'muted'}>
+                    {formatCurrency(element.price)}
+                  </Typography>
+                )}
+              </div>
+              {element.description && (
+                <Typography variant={'small'} appearance={'muted'}>
+                  {element.description}
+                </Typography>
+              )}
+            </li>
+          ))}
+        </ul>
+      </>
+    ),
+    [addons, config]
   );
 
-  const onAddonChangeHandler = useCallback(
-    (isSelected: boolean, service: Service) => {
-      if (isSelected) {
-        dispatch(addAddon({ slug: slug, addon: service }));
+  const onPackageClickHandler = useCallback(
+    (servicePackage: ServicePackage) => {
+      if (config?.package?.id === servicePackage.id) {
+        dispatch(removePackage({ slug: slug }));
       } else {
-        dispatch(removeAddon({ slug: slug, addon: service }));
+        dispatch(addPackage({ slug: slug, package: servicePackage }));
       }
     },
-    [dispatch]
+    [config]
+  );
+
+  const onAddonClickHandler = useCallback(
+    (service: Service) => {
+      if (config?.addons?.find((addon) => addon.id === service.id)) {
+        dispatch(removeAddon({ slug: slug, addon: service }));
+      } else {
+        console.log('adding');
+        dispatch(addAddon({ slug: slug, addon: service }));
+      }
+    },
+    [config]
   );
 
   return (
@@ -76,20 +110,35 @@ export function PackageConfigurator({
               {metadata.title}
             </Typography>
           )}
-          <List variant={'tile'}>
+          <ul className={cn('flex flex-col gap-2')}>
             {metadata.packages.map((element) => (
-              <ListItem
-                key={element.title}
-                id={element.id}
-                title={element.title}
-                description={element.description}
-                hint={formatCurrency(element.price)}
-                onChange={(isSelected) => {
-                  onPackageChangeHandler(isSelected, element);
-                }}
-              />
+              <li
+                key={element.id}
+                className={cn(
+                  'flex flex-col gap-3 border-2 rounded bg-white px-4 py-3 hover:bg-primary/10 hover:border-primary/10',
+                  {
+                    'border-primary text-primary bg-primary/20':
+                      config?.package?.id === element.id,
+                  }
+                )}
+                onClick={() => onPackageClickHandler(element)}
+              >
+                <div className='flex flex-row justify-between items-center'>
+                  <Typography>{element.title}</Typography>
+                  {element.price && (
+                    <Typography variant={'small'} appearance={'muted'}>
+                      {formatCurrency(element.price)}
+                    </Typography>
+                  )}
+                </div>
+                {element.description && (
+                  <Typography variant={'small'} appearance={'muted'}>
+                    {element.description}
+                  </Typography>
+                )}
+              </li>
             ))}
-          </List>
+          </ul>
         </div>
         <div>
           {addons.length > 0 && (
@@ -99,20 +148,7 @@ export function PackageConfigurator({
                   {metadata.extras.addonsTitleText}
                 </Typography>
               )}
-              <List variant={'tile'} isMulti>
-                {addons.map((element) => (
-                  <ListItem
-                    key={element.title}
-                    id={element.id}
-                    title={element.title}
-                    description={element.description}
-                    hint={formatCurrency(element.price)}
-                    onChange={(isSelected) => {
-                      onAddonChangeHandler(isSelected, element);
-                    }}
-                  />
-                ))}
-              </List>
+              {addonsList}
             </>
           )}
         </div>

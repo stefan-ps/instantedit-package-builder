@@ -1,9 +1,10 @@
-import { List, ListItem } from '~/components/list';
 import { Typography } from '~/components/ui/typography';
 import type { EventPackage, EventPackageSection } from '~/types/api';
 import { useCallback, useMemo } from 'react';
-import { useAppDispatch } from '~/store/hooks';
-import { addPackage, removePackage } from '~/store/array-builder-slice';
+import { useAppDispatch, useAppSelector } from '~/store/hooks';
+import { addPackage, removePackage } from '~/store/builder-slice';
+import { cn } from '~/lib/utils';
+import { Badge } from '~/components/ui/badge';
 
 type Props = EventPackageSection;
 
@@ -14,6 +15,7 @@ export function EventConfigurator({
   slug,
 }: Props) {
   const dispatch = useAppDispatch();
+  const config = useAppSelector((state) => state.builder.configs[slug]);
 
   const groupedEvents = useMemo(() => {
     const allEvents = metadata.packages.flatMap((item) => item.events);
@@ -41,6 +43,18 @@ export function EventConfigurator({
     [dispatch]
   );
 
+  const onPackageClickHandler = useCallback(
+    (servicePackage: EventPackage) => {
+      if (config?.package?.id === servicePackage.id) {
+        dispatch(removePackage({ slug: slug }));
+      } else {
+        dispatch(addPackage({ slug: slug, package: servicePackage }));
+      }
+    },
+    [config]
+  );
+  const onEventClickHandler = useCallback(() => {}, [config]);
+
   return (
     <>
       <div className='py-5'>
@@ -54,19 +68,35 @@ export function EventConfigurator({
               {metadata.title}
             </Typography>
           )}
-          <List variant={'tile'}>
+          <ul className={cn('flex flex-col gap-2')}>
             {metadata.packages.map((element) => (
-              <ListItem
+              <li
                 key={element.id}
-                id={element.id}
-                title={element.title}
-                hint={`${element.duration} hours`}
-                onChange={(isSelected) => {
-                  onPackageChangeHandler(isSelected, element);
-                }}
-              />
+                className={cn(
+                  'flex flex-col gap-3 border-2 rounded bg-white px-4 py-3 hover:bg-primary/10 hover:border-primary/10',
+                  {
+                    'border-primary text-primary bg-primary/20':
+                      config?.package?.id === element.id,
+                  }
+                )}
+                onClick={() => onPackageClickHandler(element)}
+              >
+                <div className='flex flex-row justify-between items-center'>
+                  <Typography>{element.title}</Typography>
+                  {element.duration && (
+                    <Typography variant={'small'} appearance={'muted'}>
+                      {`${element.duration} hours`}
+                    </Typography>
+                  )}
+                </div>
+                {element.description && (
+                  <Typography variant={'small'} appearance={'muted'}>
+                    {element.description}
+                  </Typography>
+                )}
+              </li>
             ))}
-          </List>
+          </ul>
         </div>
         {groupedEvents.map((group) => (
           <div key={group.id}>
@@ -75,11 +105,25 @@ export function EventConfigurator({
                 {group.title}
               </Typography>
             )}
-            <List variant={'badge'}>
+            <ul className={cn('flex flex-row gap-2 ')}>
               {group.events.map((event) => (
-                <ListItem key={event.id} id={event.id} title={event.title} />
+                <li key={event.id}>
+                  <Badge
+                    variant={
+                      (config?.package as EventPackage)?.events.some(
+                        (e) => e.id === event.id
+                      )
+                        ? 'default'
+                        : 'outline'
+                    }
+                    onClick={() => onEventClickHandler()}
+                    size={'lg'}
+                  >
+                    {event.title}
+                  </Badge>
+                </li>
               ))}
-            </List>
+            </ul>
           </div>
         ))}
       </div>

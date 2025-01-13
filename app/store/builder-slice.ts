@@ -1,66 +1,73 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import type { Service, ServicePackage } from '~/types/api';
+import type { Addon, EventPackage, Section, ServicePackage } from '~/types/api';
+
+export type ConfigSection = {
+  slug: Section['slug'];
+  package?: ServicePackage | EventPackage;
+  addons?: Addon[];
+};
 
 export type BuilderSliceType = {
-  configuration: {
-    eventPackageId?: number;
-    photography: {
-      package?: ServicePackage;
-      addons: Service[];
-    };
-    cinematography: {
-      package?: ServicePackage;
-      addons: Service[];
-    };
-  };
+  configs: Partial<
+    Record<
+      Section['slug'],
+      { package?: ServicePackage | EventPackage; addons: Addon[] }
+    >
+  >;
 };
 
 const initialState: BuilderSliceType = {
-  configuration: {
-    eventPackageId: undefined,
-    photography: {
-      package: undefined,
-      addons: [],
-    },
-    cinematography: {
-      package: undefined,
-      addons: [],
-    },
-  },
+  configs: {},
 };
 
 export const builderSlice = createSlice({
   name: 'builder',
   initialState,
   reducers: {
-    changeEventPackage: (state, action) => {
-      state.configuration.eventPackageId = action.payload.id;
+    addPackage: (state, action: PayloadAction<ConfigSection>) => {
+      const sectionConfiguration = state.configs[action.payload.slug];
+      if (!sectionConfiguration) {
+        console.log(action.payload);
+        state.configs[action.payload.slug] = {
+          package: action.payload.package,
+          addons: action.payload.addons ?? [],
+        };
+      } else {
+        sectionConfiguration.package = action.payload.package;
+        sectionConfiguration.addons = action.payload.addons ?? [];
+      }
     },
-    addBundle: (state, action: PayloadAction<ServicePackage>) => {
-      state.configuration.photography.package = action.payload;
+    removePackage: (
+      state,
+      action: PayloadAction<{ slug: Section['slug'] }>
+    ) => {
+      delete state.configs[action.payload.slug];
     },
-    removeBundle: (state) => {
-      state.configuration.photography.package = undefined;
+    addAddon: (
+      state,
+      action: PayloadAction<{ slug: Section['slug']; addon: Addon }>
+    ) => {
+      const sectionConfiguration = state.configs[action.payload.slug];
+      if (sectionConfiguration) {
+        sectionConfiguration.addons.push(action.payload.addon);
+      }
     },
-    addAddon: (state, action) => {
-      state.configuration.photography.addons.push(action.payload);
-    },
-    removeAddon: (state, action) => {
-      state.configuration.photography.addons =
-        state.configuration.photography.addons.filter(
-          (addon) => addon.id !== action.payload.id
+    removeAddon: (
+      state,
+      action: PayloadAction<{ slug: Section['slug']; addon: Addon }>
+    ) => {
+      const sectionConfiguration = state.configs[action.payload.slug];
+      if (sectionConfiguration) {
+        sectionConfiguration.addons = sectionConfiguration.addons.filter(
+          (addon) => addon.id !== action.payload.addon.id
         );
+      }
     },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const {
-  changeEventPackage,
-  addBundle,
-  removeBundle,
-  addAddon,
-  removeAddon,
-} = builderSlice.actions;
+export const { addPackage, removePackage, addAddon, removeAddon } =
+  builderSlice.actions;
 
 export default builderSlice.reducer;
