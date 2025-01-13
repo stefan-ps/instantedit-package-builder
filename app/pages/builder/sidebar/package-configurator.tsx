@@ -1,0 +1,158 @@
+import { useCallback, useMemo } from 'react';
+import { Typography } from '~/components/ui/typography';
+import { formatCurrency } from '~/lib/format';
+import { cn } from '~/lib/utils';
+import {
+  addAddon,
+  addPackage,
+  removeAddon,
+  removePackage,
+} from '~/store/builder-slice';
+import { useAppDispatch, useAppSelector } from '~/store/hooks';
+import type {
+  Section,
+  Service,
+  ServicePackage,
+  ServicePackageSection,
+} from '~/types/api';
+
+type Props = ServicePackageSection & { slug: Section['slug'] };
+
+export function PackageConfigurator({
+  title,
+  description,
+  slug,
+  metadata,
+}: Props) {
+  const config = useAppSelector((state) => state.builder.configs[slug]);
+
+  const dispatch = useAppDispatch();
+
+  const addons = useMemo(() => {
+    return [
+      ...(metadata.addons ?? []),
+      ...(metadata.packages.find(
+        (servicePackage) => servicePackage.id === config?.package?.id
+      )?.addons ?? []),
+    ];
+  }, [config]);
+
+  const addonsList = useMemo(
+    () => (
+      <>
+        <ul className={cn('flex flex-col gap-2')}>
+          {addons.map((element) => (
+            <li
+              key={element.id}
+              className={cn(
+                'flex flex-col gap-3 border-2 rounded bg-white px-4 py-3 hover:bg-primary/10 hover:border-primary/10',
+                {
+                  'border-primary text-primary bg-primary/20':
+                    config?.addons?.find((addon) => addon.id === element.id),
+                }
+              )}
+              onClick={() => onAddonClickHandler(element)}
+            >
+              <div className='flex flex-row justify-between items-center'>
+                <Typography>{element.title}</Typography>
+                {element.price && (
+                  <Typography variant={'small'} appearance={'muted'}>
+                    {formatCurrency(element.price)}
+                  </Typography>
+                )}
+              </div>
+              {element.description && (
+                <Typography variant={'small'} appearance={'muted'}>
+                  {element.description}
+                </Typography>
+              )}
+            </li>
+          ))}
+        </ul>
+      </>
+    ),
+    [addons, config]
+  );
+
+  const onPackageClickHandler = useCallback(
+    (servicePackage: ServicePackage) => {
+      if (config?.package?.id === servicePackage.id) {
+        dispatch(removePackage({ slug: slug }));
+      } else {
+        dispatch(addPackage({ slug: slug, package: servicePackage }));
+      }
+    },
+    [config]
+  );
+
+  const onAddonClickHandler = useCallback(
+    (service: Service) => {
+      if (config?.addons?.find((addon) => addon.id === service.id)) {
+        dispatch(removeAddon({ slug: slug, addon: service }));
+      } else {
+        console.log('adding');
+        dispatch(addAddon({ slug: slug, addon: service }));
+      }
+    },
+    [config]
+  );
+
+  return (
+    <>
+      <div className='py-5'>
+        <Typography variant={'h3'}>{title}</Typography>
+        <Typography appearance={'muted'}>{description}</Typography>
+      </div>
+      <div className='flex flex-col gap-5'>
+        <div>
+          {metadata.title && (
+            <Typography variant={'h4'} className='mb-3'>
+              {metadata.title}
+            </Typography>
+          )}
+          <ul className={cn('flex flex-col gap-2')}>
+            {metadata.packages.map((element) => (
+              <li
+                key={element.id}
+                className={cn(
+                  'flex flex-col gap-3 border-2 rounded bg-white px-4 py-3 hover:bg-primary/10 hover:border-primary/10',
+                  {
+                    'border-primary text-primary bg-primary/20':
+                      config?.package?.id === element.id,
+                  }
+                )}
+                onClick={() => onPackageClickHandler(element)}
+              >
+                <div className='flex flex-row justify-between items-center'>
+                  <Typography>{element.title}</Typography>
+                  {element.price && (
+                    <Typography variant={'small'} appearance={'muted'}>
+                      {formatCurrency(element.price)}
+                    </Typography>
+                  )}
+                </div>
+                {element.description && (
+                  <Typography variant={'small'} appearance={'muted'}>
+                    {element.description}
+                  </Typography>
+                )}
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div>
+          {addons.length > 0 && (
+            <>
+              {metadata.extras.addonsTitleText && (
+                <Typography variant={'h4'} className='mb-3'>
+                  {metadata.extras.addonsTitleText}
+                </Typography>
+              )}
+              {addonsList}
+            </>
+          )}
+        </div>
+      </div>
+    </>
+  );
+}
