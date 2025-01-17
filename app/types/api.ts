@@ -83,3 +83,9 @@ export type EventType = {
   title: string;
   description?: string;
 };
+
+export const isServicePackage = (entity: any): entity is ServicePackage =>
+  entity.price !== undefined;
+
+export const isEventPackage = (entity: any): entity is EventPackage =>
+  entity.events !== undefined;

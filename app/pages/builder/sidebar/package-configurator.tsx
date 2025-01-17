@@ -1,4 +1,5 @@
 import { useCallback, useMemo } from 'react';
+import { Button } from '~/components/ui/button';
 import { Typography } from '~/components/ui/typography';
 import { formatCurrency } from '~/lib/format';
 import { cn } from '~/lib/utils';
@@ -99,9 +100,16 @@ export function PackageConfigurator({
 
   return (
     <>
-      <div className='py-5'>
-        <Typography variant={'h3'}>{title}</Typography>
-        <Typography appearance={'muted'}>{description}</Typography>
+      <div className='py-5 flex flex-row justify-between'>
+        <div>
+          <Typography variant={'h3'}>{title}</Typography>
+          <Typography appearance={'muted'}>{description}</Typography>
+        </div>
+        <div>
+          <Button variant={'link'}>
+            {metadata.extras.comparePackagesText}
+          </Button>
+        </div>
       </div>
       <div className='flex flex-col gap-5'>
         <div>
@@ -139,6 +147,12 @@ export function PackageConfigurator({
               </li>
             ))}
           </ul>
+          <div className='flex flex-row justify-between items-center'>
+            <Typography variant={'small'} appearance={'muted'}>
+              {metadata.extras.helpText}
+            </Typography>
+            <Button variant={'link'}>{metadata.extras.helpActionText}</Button>
+          </div>
         </div>
         <div>
           {addons.length > 0 && (

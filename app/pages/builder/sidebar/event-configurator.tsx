@@ -30,19 +30,6 @@ export function EventConfigurator({
     }));
   }, [metadata]);
 
-  const onPackageChangeHandler = useCallback(
-    (isSelected: boolean, servicePackage: EventPackage) => {
-      if (isSelected) {
-        dispatch(
-          addPackage({ slug: slug, package: servicePackage, addons: [] })
-        );
-      } else {
-        dispatch(removePackage({ slug: slug }));
-      }
-    },
-    [dispatch]
-  );
-
   const onPackageClickHandler = useCallback(
     (servicePackage: EventPackage) => {
       if (config?.package?.id === servicePackage.id) {
