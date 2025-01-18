@@ -2,15 +2,15 @@ import { Button } from '~/components/ui/button';
 import { Typography } from '~/components/ui/typography';
 import { Section } from './section';
 import { useBuilderContext } from '~/providers/builder-provider';
-import { SlCallOut } from 'react-icons/sl';
-import { FaAngleDown } from 'react-icons/fa';
 import CartCard from './cart/cart-card';
 
 export function Sidebar() {
   const { sections } = useBuilderContext();
 
   return (
-    <div className='relative'>
+    <div
+      className='relative'
+    >
       <div className='flex flex-row justify-between items-center bg-white p-5'>
         <Typography variant={'h2'}>Welcome!</Typography>
         <Button>

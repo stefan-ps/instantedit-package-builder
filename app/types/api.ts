@@ -4,6 +4,7 @@ export type ServicePackageSection = {
   id: number;
   title: string;
   description?: string;
+  coverUrl?: string;
   slug: 'photography' | 'cinematography';
   type: 'package';
   metadata: ServicePackageMetadata;
@@ -13,6 +14,7 @@ export type EventPackageSection = {
   id: number;
   title: string;
   description?: string;
+  coverUrl?: string;
   slug: 'event';
   type: 'event';
   metadata: EventPackageMetadata;
