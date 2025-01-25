@@ -42,7 +42,7 @@ const CartCard = () => {
   }
 
   return (
-    <div className='basis-1/3 fixed w-1/3 bottom-0 right-0 px-5'>
+    <div className='lg:basis-1/3 fixed w-full lg:w-1/3 bottom-0 right-0 px-5'>
       <div className='flex flex-col  gap-10 grow  bg-[#09090B] px-5 py-7 rounded-tl-3xl rounded-tr-3xl'>
         <div className='flex flex-row justify-between items-start'>
           <div>
