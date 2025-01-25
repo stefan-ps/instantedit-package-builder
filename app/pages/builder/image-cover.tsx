@@ -4,7 +4,6 @@ import { useBuilderContext } from '~/providers/builder-provider';
 const ImageCover = () => {
   const { sections, activeSection } = useBuilderContext();
 
-  console.log(activeSection);
   return (
     <img
       src={sections.find((section) => section.id === activeSection)?.coverUrl}

@@ -1,17 +1,28 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import type { Addon, EventPackage, Section, ServicePackage } from '~/types/api';
+import type {
+  Addon,
+  Event,
+  EventPackage,
+  Section,
+  ServicePackage,
+} from '~/types/api';
 
 export type ConfigSection = {
   slug: Section['slug'];
   package?: ServicePackage | EventPackage;
   addons?: Addon[];
+  events?: Event[];
 };
 
 export type BuilderSliceType = {
   configs: Partial<
     Record<
       Section['slug'],
-      { package?: ServicePackage | EventPackage; addons: Addon[] }
+      {
+        package?: ServicePackage | EventPackage;
+        addons: Addon[];
+        events: Event[];
+      }
     >
   >;
 };
@@ -27,14 +38,15 @@ export const builderSlice = createSlice({
     addPackage: (state, action: PayloadAction<ConfigSection>) => {
       const sectionConfiguration = state.configs[action.payload.slug];
       if (!sectionConfiguration) {
-        console.log(action.payload);
         state.configs[action.payload.slug] = {
           package: action.payload.package,
           addons: action.payload.addons ?? [],
+          events: action.payload.events ?? [],
         };
       } else {
         sectionConfiguration.package = action.payload.package;
         sectionConfiguration.addons = action.payload.addons ?? [];
+        sectionConfiguration.events = action.payload.events ?? [];
       }
     },
     removePackage: (
@@ -42,6 +54,18 @@ export const builderSlice = createSlice({
       action: PayloadAction<{ slug: Section['slug'] }>
     ) => {
       delete state.configs[action.payload.slug];
+    },
+    updateEvents: (state, action: PayloadAction<ConfigSection>) => {
+      const sectionConfiguration = state.configs[action.payload.slug];
+      if (sectionConfiguration) {
+        sectionConfiguration.events = action.payload.events ?? [];
+      } else {
+        state.configs[action.payload.slug] = {
+          package: undefined,
+          addons: [],
+          events: action.payload.events ?? [],
+        };
+      }
     },
     addAddon: (
       state,
@@ -67,7 +91,12 @@ export const builderSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { addPackage, removePackage, addAddon, removeAddon } =
-  builderSlice.actions;
+export const {
+  addPackage,
+  removePackage,
+  updateEvents,
+  addAddon,
+  removeAddon,
+} = builderSlice.actions;
 
 export default builderSlice.reducer;

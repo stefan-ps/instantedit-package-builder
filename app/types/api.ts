@@ -69,6 +69,8 @@ export type EventPackage = {
   description?: string;
   duration?: number;
   events: Event[];
+  photographyDefaultId?: number;
+  cinematographyDefaultId?: number;
 };
 
 export type Event = {

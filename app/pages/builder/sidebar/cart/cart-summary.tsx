@@ -26,11 +26,11 @@ const CartSummary = () => {
           <div className='flex flex-col gap-8 py-5'>
             {Object.values(config).map((item) => {
               if (isEventPackage(item.package)) {
-                return <EventSummary item={item.package} />;
+                return <EventSummary key={item.package.id} item={item.package} events={item.events} />;
               }
 
               if (isServicePackage(item.package)) {
-                return <PackageSummary item={item.package} />;
+                return <PackageSummary key={item.package.id} item={item.package} />;
               }
 
               return null;

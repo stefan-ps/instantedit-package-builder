@@ -91,7 +91,6 @@ export function PackageConfigurator({
       if (config?.addons?.find((addon) => addon.id === service.id)) {
         dispatch(removeAddon({ slug: slug, addon: service }));
       } else {
-        console.log('adding');
         dispatch(addAddon({ slug: slug, addon: service }));
       }
     },

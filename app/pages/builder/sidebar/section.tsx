@@ -17,8 +17,6 @@ export function Section({ id }: Props) {
       ([entry]) => {
         // Check if the element is at least 50% visible
         if (entry.intersectionRatio >= 0.9) {
-          console.log('Should change');
-          console.log('test', entry.boundingClientRect.top)
           setActiveSection(id);
         }
       },

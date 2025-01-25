@@ -1,18 +1,19 @@
 import React from 'react';
 import { Badge } from '~/components/ui/badge';
 import { Typography } from '~/components/ui/typography';
-import type { EventPackage } from '~/types/api';
+import type { Event, EventPackage } from '~/types/api';
 
 type Props = {
   item: EventPackage;
+  events: Event[];
 };
 
-const EventSummary = ({ item }: Props) => {
+const EventSummary = ({ item, events }: Props) => {
   return (
     <div className='flex flex-col gap-3'>
       <Typography variant={'h3'}>{item.title}</Typography>
       <ul className='flex flex-row gap-3'>
-        {item.events.map((event) => (
+        {events.map((event) => (
           <li key={event.id}>
             <Badge>{event.title}</Badge>
           </li>
