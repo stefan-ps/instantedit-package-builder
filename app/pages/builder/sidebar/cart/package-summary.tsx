@@ -1,11 +1,17 @@
 import { Typography } from '~/components/ui/typography';
 import type { ServicePackage } from '~/types/api';
+import { calculateBundlePrice } from '../utils';
+import { useAppSelector } from '~/store/hooks';
+import { useBuilderContext } from '~/providers/builder-provider';
 
 type Props = {
   item: ServicePackage;
 };
 
 const PackageSummary = ({ item }: Props) => {
+  const { settings } = useBuilderContext();
+  const eventConfig = useAppSelector((state) => state.builder.configs.event);
+
   return (
     <div key={item.id}>
       <div className='flex flex-row justify-between items-center gap-5  border-b mb-3'>
@@ -19,7 +25,9 @@ const PackageSummary = ({ item }: Props) => {
           {new Intl.NumberFormat('en-US', {
             style: 'currency',
             currency: 'USD',
-          }).format(item.price)}
+          }).format(
+            calculateBundlePrice(item, eventConfig?.events ?? [], settings)
+          )}
         </Typography>
       </div>
       <div className='px-5'>

@@ -5,8 +5,8 @@ import { BuilderProvider } from '~/providers/builder-provider';
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: 'New React Router App' },
-    { name: 'description', content: 'Welcome to React Router!' },
+    { title: 'Test - Package Builder' },
+    { name: 'description', content: 'Welcome to Package Builder' },
   ];
 }
 

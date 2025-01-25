@@ -213,7 +213,7 @@ export const data = {
             title: 'Max Coverage',
             description:
               'Two cinematographers, three-camera angles, full drone coverage, highlight film, and full-length video',
-            price: 3000,
+            price: 5000,
             comparable: [
               'One Photographer',
               'Professional Posing & Coaching',

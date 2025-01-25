@@ -3,10 +3,10 @@ import { Button } from '~/components/ui/button';
 import { Typography } from '~/components/ui/typography';
 import CartSummary from './cart-summary';
 import { useAppSelector } from '~/store/hooks';
-import { isEventPackage, isServicePackage } from '~/types/api';
+import { isServicePackage } from '~/types/api';
 import { useMemo } from 'react';
 import { useBuilderContext } from '~/providers/builder-provider';
-import { calculateEventPrice } from '../utils';
+import { calculateBundlePrice } from '../utils';
 
 const CartCard = () => {
   const { settings } = useBuilderContext();
@@ -17,9 +17,11 @@ const CartCard = () => {
       Object.values(config).reduce((acc, curr, _, array) => {
         let total = acc;
         if (isServicePackage(curr.package)) {
-          total += curr.package.price;
-
-          total += calculateEventPrice(config.event?.events ?? [], settings);
+          total += calculateBundlePrice(
+            curr.package,
+            config.event?.events ?? [],
+            settings
+          );
         }
 
         curr.addons.forEach((addon) => {

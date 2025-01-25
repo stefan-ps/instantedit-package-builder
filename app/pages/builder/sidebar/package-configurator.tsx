@@ -17,7 +17,7 @@ import type {
   ServicePackage,
   ServicePackageSection,
 } from '~/types/api';
-import { calculateEventPrice } from './utils';
+import { calculateBundlePrice } from './utils';
 
 type Props = ServicePackageSection & { slug: Section['slug'] };
 
@@ -41,13 +41,6 @@ export function PackageConfigurator({
       )?.addons ?? []),
     ];
   }, [config]);
-
-  const packagePrice = useMemo(
-    () =>
-      ((config?.package as ServicePackage | undefined)?.price ?? 0) +
-      calculateEventPrice(eventConfig?.events ?? [], settings),
-    [config, eventConfig, settings]
-  );
 
   const addonsList = useMemo(
     () => (
@@ -91,7 +84,12 @@ export function PackageConfigurator({
       if (config?.package?.id === servicePackage.id) {
         dispatch(removePackage({ slug: slug }));
       } else {
-        dispatch(addPackage({ slug: slug, package: servicePackage }));
+        dispatch(
+          addPackage({
+            slug: slug,
+            package: servicePackage,
+          })
+        );
       }
     },
     [config]
@@ -145,7 +143,13 @@ export function PackageConfigurator({
                   <Typography>{element.title}</Typography>
                   {element.price && (
                     <Typography variant={'small'} appearance={'muted'}>
-                      {formatCurrency(packagePrice)}
+                      {formatCurrency(
+                        calculateBundlePrice(
+                          element,
+                          eventConfig?.events ?? [],
+                          settings
+                        )
+                      )}
                     </Typography>
                   )}
                 </div>
