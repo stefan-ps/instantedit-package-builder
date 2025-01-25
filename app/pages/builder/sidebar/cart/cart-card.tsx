@@ -3,30 +3,39 @@ import { Button } from '~/components/ui/button';
 import { Typography } from '~/components/ui/typography';
 import CartSummary from './cart-summary';
 import { useAppSelector } from '~/store/hooks';
-import { isServicePackage } from '~/types/api';
+import { isEventPackage, isServicePackage } from '~/types/api';
 import { useMemo } from 'react';
+import { useBuilderContext } from '~/providers/builder-provider';
+import { calculateEventPrice } from '../utils';
 
 const CartCard = () => {
+  const { settings } = useBuilderContext();
   const config = useAppSelector((state) => state.builder.configs);
 
-  const calculatedTotal = useMemo(() => Object.values(config).reduce((acc, curr) => {
-    let total = acc;
-    if (isServicePackage(curr.package)) {
-      total += curr.package.price;
-    }
+  const calculatedTotal = useMemo(
+    () =>
+      Object.values(config).reduce((acc, curr, _, array) => {
+        let total = acc;
+        if (isServicePackage(curr.package)) {
+          total += curr.package.price;
 
-    curr.addons.forEach((addon) => {
-      total += addon.price;
-    });
-    return total;
-  }, 0), [config]);
+          total += calculateEventPrice(config.event?.events ?? [], settings);
+        }
+
+        curr.addons.forEach((addon) => {
+          total += addon.price;
+        });
+        return total;
+      }, 0),
+    [config]
+  );
 
   const formattedTotal = new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
   }).format(calculatedTotal);
 
-  if(Object.values(config).length === 0) {
+  if (Object.values(config).length === 0) {
     return;
   }
 

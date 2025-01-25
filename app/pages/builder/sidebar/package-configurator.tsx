@@ -3,6 +3,7 @@ import { Button } from '~/components/ui/button';
 import { Typography } from '~/components/ui/typography';
 import { formatCurrency } from '~/lib/format';
 import { cn } from '~/lib/utils';
+import { useBuilderContext } from '~/providers/builder-provider';
 import {
   addAddon,
   addPackage,
@@ -16,6 +17,7 @@ import type {
   ServicePackage,
   ServicePackageSection,
 } from '~/types/api';
+import { calculateEventPrice } from './utils';
 
 type Props = ServicePackageSection & { slug: Section['slug'] };
 
@@ -25,7 +27,9 @@ export function PackageConfigurator({
   slug,
   metadata,
 }: Props) {
+  const { settings } = useBuilderContext();
   const config = useAppSelector((state) => state.builder.configs[slug]);
+  const eventConfig = useAppSelector((state) => state.builder.configs.event);
 
   const dispatch = useAppDispatch();
 
@@ -37,6 +41,13 @@ export function PackageConfigurator({
       )?.addons ?? []),
     ];
   }, [config]);
+
+  const packagePrice = useMemo(
+    () =>
+      ((config?.package as ServicePackage | undefined)?.price ?? 0) +
+      calculateEventPrice(eventConfig?.events ?? [], settings),
+    [config, eventConfig, settings]
+  );
 
   const addonsList = useMemo(
     () => (
@@ -134,7 +145,7 @@ export function PackageConfigurator({
                   <Typography>{element.title}</Typography>
                   {element.price && (
                     <Typography variant={'small'} appearance={'muted'}>
-                      {formatCurrency(element.price)}
+                      {formatCurrency(packagePrice)}
                     </Typography>
                   )}
                 </div>

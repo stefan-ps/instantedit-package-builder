@@ -5,9 +5,16 @@ import type {
   Section,
   ServicePackage,
   ServicePackageMetadata,
+  Settings,
 } from '~/types/api';
 
 export const data = {
+  settings: {
+    events: {
+      firstPrice: 1500,
+      price: 750,
+    },
+  },
   sections: [
     {
       id: 1,
@@ -224,4 +231,7 @@ export const data = {
       } as ServicePackageMetadata,
     } as Section,
   ] as Section[],
-} as { sections: Section[] };
+} as {
+  settings: Settings;
+  sections: Section[];
+};

@@ -1,3 +1,10 @@
+export type Settings = {
+  events: {
+    price: number;
+    firstPrice: number;
+  }
+}
+
 export type Section = ServicePackageSection | EventPackageSection;
 
 export type ServicePackageSection = {

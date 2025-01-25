@@ -4,9 +4,10 @@ import React, {
   useState,
   type PropsWithChildren,
 } from 'react';
-import type { Section } from '~/types/api';
+import type { Section, Settings } from '~/types/api';
 
 type BuilderContextType = {
+  settings: Settings;
   sections: Section[];
   activeSection: number;
   setActiveSection: (section: number) => void;
@@ -16,9 +17,11 @@ const BuilderContext = React.createContext<BuilderContextType | null>(null);
 
 type BuilderProviderProps = {
   sections: Section[];
+  settings: Settings;
 };
 
 export const BuilderProvider = ({
+  settings,
   sections: init,
   children,
 }: PropsWithChildren<BuilderProviderProps>) => {
@@ -27,6 +30,7 @@ export const BuilderProvider = ({
 
   const memoized = useMemo(
     () => ({
+      settings,
       sections,
       activeSection,
       setActiveSection,

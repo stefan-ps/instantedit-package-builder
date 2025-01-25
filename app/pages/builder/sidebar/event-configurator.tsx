@@ -209,7 +209,7 @@ export function EventConfigurator({
                     bundle.events.filter((ev) => ev.id === event.id).length >
                       0 &&
                     [...eventSelector[event.type], event].every((ev) =>
-                      bundle.events.includes(ev)
+                      bundle.events.some((bev) => bev.id === ev.id)
                     )
                 )
                 ?.sort((a, b) => a.events.length - b.events.length)[0] ??

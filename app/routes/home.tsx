@@ -3,8 +3,6 @@ import type { Route } from './+types/home';
 import { data } from '~/pages/builder/data';
 import { BuilderProvider } from '~/providers/builder-provider';
 
-
-
 export function meta({}: Route.MetaArgs) {
   return [
     { title: 'New React Router App' },
@@ -14,7 +12,7 @@ export function meta({}: Route.MetaArgs) {
 
 export default function Home() {
   return (
-    <BuilderProvider sections={data.sections}>
+    <BuilderProvider sections={data.sections} settings={data.settings}>
       <Builder />
     </BuilderProvider>
   );
