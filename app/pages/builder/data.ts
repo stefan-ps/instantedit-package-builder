@@ -110,9 +110,41 @@ export const data = {
               'One photographer, perfect for small intimate weddings',
             price: 2000,
             comparable: [
-              'One Photographer',
-              'Professional Posing & Coaching',
-              'Family Portrait Session',
+              {
+                label: 'Cinematographer',
+                value: 1,
+                type: 'string',
+              },
+              {
+                label: 'Camera Coverage',
+                value: 1,
+                type: 'string',
+              },
+              {
+                label: 'Highlight Film',
+                type: 'icon',
+                value: 'check-circle.svg',
+              },
+              {
+                label: 'Professional Audio Capture',
+                type: 'icon',
+                value: 'check-circle.svg',
+              },
+              {
+                label: 'Drone Coverage',
+                type: 'icon',
+                value: 'close-circle.svg',
+              },
+              {
+                label: 'Full Length Video',
+                type: 'icon',
+                value: 'close-circle.svg',
+              },
+              {
+                label: 'Professional Studio Lightning',
+                type: 'icon',
+                value: 'close-circle.svg',
+              },
             ],
             addons: [],
           } as ServicePackage,
@@ -123,9 +155,41 @@ export const data = {
               'One photographer, perfect for small intimate weddings',
             price: 3000,
             comparable: [
-              'One Photographer',
-              'Professional Posing & Coaching',
-              '2x Family Portrait Session',
+              {
+                label: 'Cinematographer',
+                value: 1,
+                type: 'string',
+              },
+              {
+                label: 'Camera Coverage',
+                value: 2,
+                type: 'string',
+              },
+              {
+                label: 'Highlight Film',
+                type: 'icon',
+                value: 'check-circle.svg',
+              },
+              {
+                label: 'Professional Audio Capture',
+                type: 'icon',
+                value: 'check-circle.svg',
+              },
+              {
+                label: 'Drone Coverage',
+                type: 'icon',
+                value: 'check-circle.svg',
+              },
+              {
+                label: 'Full Length Video',
+                type: 'icon',
+                value: 'check-circle.svg',
+              },
+              {
+                label: 'Professional Studio Lightning',
+                type: 'icon',
+                value: 'check-circle.svg',
+              },
             ],
             addons: [],
           } as ServicePackage,
@@ -181,9 +245,35 @@ export const data = {
               'One cinematographer, single-camera coverage, highlight film, and raw footage delivery',
             price: 2000,
             comparable: [
-              'One Photographer',
-              'Professional Posing & Coaching',
-              'Family Portrait Session',
+              {
+                label: 'Cinematographer',
+                value: 1,
+                type: 'string',
+              },
+              {
+                label: 'Camera Coverage',
+                value: 1,
+              },
+              {
+                label: 'Highlight Film',
+                value: '',
+              },
+              {
+                label: 'Professional Audio Capture',
+                value: '',
+              },
+              {
+                label: 'Drone Coverage',
+                value: '',
+              },
+              {
+                label: 'Full Length Video',
+                value: '',
+              },
+              {
+                label: 'Professional Studio Lightning',
+                value: '',
+              },
             ],
             addons: [],
           },
@@ -194,9 +284,35 @@ export const data = {
               'Two-camera coverage, lite drone footage, highlight film, and full-length video.',
             price: 3000,
             comparable: [
-              'One Photographer',
-              'Professional Posing & Coaching',
-              '2x Family Portrait Session',
+              {
+                label: 'Cinematographer',
+                value: 1,
+                type: 'string',
+              },
+              {
+                label: 'Camera Coverage',
+                value: 1,
+              },
+              {
+                label: 'Highlight Film',
+                value: '',
+              },
+              {
+                label: 'Professional Audio Capture',
+                value: '',
+              },
+              {
+                label: 'Drone Coverage',
+                value: '',
+              },
+              {
+                label: 'Full Length Video',
+                value: '',
+              },
+              {
+                label: 'Professional Studio Lightning',
+                value: '',
+              },
             ],
             addons: [
               {
@@ -215,9 +331,34 @@ export const data = {
               'Two cinematographers, three-camera angles, full drone coverage, highlight film, and full-length video',
             price: 5000,
             comparable: [
-              'One Photographer',
-              'Professional Posing & Coaching',
-              '2x Family Portrait Session',
+              {
+                label: 'Cinematographer',
+                value: 1,
+              },
+              {
+                label: 'Camera Coverage',
+                value: 1,
+              },
+              {
+                label: 'Highlight Film',
+                value: '',
+              },
+              {
+                label: 'Professional Audio Capture',
+                value: '',
+              },
+              {
+                label: 'Drone Coverage',
+                value: '',
+              },
+              {
+                label: 'Full Length Video',
+                value: '',
+              },
+              {
+                label: 'Professional Studio Lightning',
+                value: '',
+              },
             ],
             addons: [],
           },

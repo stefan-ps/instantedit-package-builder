@@ -18,6 +18,7 @@ import type {
   ServicePackageSection,
 } from '~/types/api';
 import { calculateBundlePrice } from './utils';
+import ComparableContainer from './comparable/container';
 
 type Props = ServicePackageSection & { slug: Section['slug'] };
 
@@ -114,9 +115,14 @@ export function PackageConfigurator({
           <Typography appearance={'muted'}>{description}</Typography>
         </div>
         <div>
-          <Button variant={'link'}>
-            {metadata.extras.comparePackagesText}
-          </Button>
+          <ComparableContainer
+            title={title}
+            actionText={metadata.extras.comparePackagesText}
+            bundles={metadata.packages}
+            events={eventConfig?.events ?? []}
+            settings={settings}
+            onSelect={onPackageClickHandler}
+          />
         </div>
       </div>
       <div className='flex flex-col gap-5'>

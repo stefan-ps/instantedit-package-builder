@@ -20,7 +20,6 @@ export function Builder() {
         className='z-10 lg:basis-2/3 h-64 lg:h-screen w-full lg:w-2/3 fixed top-0 left-0'
       >
         <ImageCover />
-        {/* <img src={sections[0].coverUrl}  className='h-full w-full object-cover' /> */}
       </div>
       <div className={'relative top-64 lg:top-0 lg:basis-1/3'}>
         <Sidebar />

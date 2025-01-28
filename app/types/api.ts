@@ -2,8 +2,8 @@ export type Settings = {
   events: {
     price: number;
     firstPrice: number;
-  }
-}
+  };
+};
 
 export type Section = ServicePackageSection | EventPackageSection;
 
@@ -50,7 +50,11 @@ export type ServicePackage = {
   description?: string;
   price: number;
   addons: Service[];
-  comparable: string[];
+  comparable: {
+    label: string;
+    value: string | number;
+    type: 'icon' | 'string';
+  }[];
 };
 
 export type Service = {

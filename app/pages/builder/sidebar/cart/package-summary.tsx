@@ -33,9 +33,9 @@ const PackageSummary = ({ item }: Props) => {
       <div className='px-5'>
         <ul className='list-disc  text-gray-500 '>
           {item.comparable.map((comp) => (
-            <li key={comp}>
+            <li key={comp.label}>
               <Typography variant={'small'} appearance={'muted'}>
-                {comp}
+                {comp.label}
               </Typography>
             </li>
           ))}
