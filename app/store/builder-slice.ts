@@ -4,12 +4,12 @@ import type {
   Event,
   EventPackage,
   Section,
-  ServicePackage,
+  Bundle,
 } from '~/types/api';
 
 export type ConfigSection = {
   slug: Section['slug'];
-  package?: ServicePackage | EventPackage;
+  package?: Bundle | EventPackage;
   addons?: Addon[];
   events?: Event[];
 };
@@ -19,7 +19,7 @@ export type BuilderSliceType = {
     Record<
       Section['slug'],
       {
-        package?: ServicePackage | EventPackage;
+        package?: Bundle | EventPackage;
         addons: Addon[];
         events: Event[];
       }

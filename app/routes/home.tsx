@@ -1,6 +1,5 @@
 import { Builder } from '~/pages/builder/builder';
 import type { Route } from './+types/home';
-import { data } from '~/pages/builder/data';
 import { BuilderProvider } from '~/providers/builder-provider';
 
 export function meta({}: Route.MetaArgs) {
@@ -10,9 +9,14 @@ export function meta({}: Route.MetaArgs) {
   ];
 }
 
-export default function Home() {
+export async function clientLoader({ params }: Route.LoaderArgs) {
+  const product = await fetch('https://instantedit-package-builder-api.onrender.com/api/section');
+  return await product.json();
+}
+
+export default function Home({ loaderData }: Route.ComponentProps) {
   return (
-    <BuilderProvider sections={data.sections} settings={data.settings}>
+    <BuilderProvider sections={loaderData.sections} settings={loaderData.settings}>
       <Builder />
     </BuilderProvider>
   );

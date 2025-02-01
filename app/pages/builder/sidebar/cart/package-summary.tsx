@@ -1,11 +1,11 @@
 import { Typography } from '~/components/ui/typography';
-import type { ServicePackage } from '~/types/api';
+import type { Bundle } from '~/types/api';
 import { calculateBundlePrice } from '../utils';
 import { useAppSelector } from '~/store/hooks';
 import { useBuilderContext } from '~/providers/builder-provider';
 
 type Props = {
-  item: ServicePackage;
+  item: Bundle;
 };
 
 const PackageSummary = ({ item }: Props) => {
@@ -32,10 +32,10 @@ const PackageSummary = ({ item }: Props) => {
       </div>
       <div className='px-5'>
         <ul className='list-disc  text-gray-500 '>
-          {item.comparable.map((comp) => (
-            <li key={comp.label}>
+          {item.comparables.map((comp) => (
+            <li key={comp.title}>
               <Typography variant={'small'} appearance={'muted'}>
-                {comp.label}
+                {comp.title}
               </Typography>
             </li>
           ))}

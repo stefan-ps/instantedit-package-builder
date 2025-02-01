@@ -39,7 +39,7 @@ export function Section({ id }: Props) {
   return (
     <div className='px-5 pb-10 pt-20' ref={elementRef}>
       {section.type === 'event' && <EventConfigurator {...section} />}
-      {section.type === 'package' && <PackageConfigurator {...section} />}
+      {section.type === 'service' && <PackageConfigurator {...section} />}
     </div>
   );
 }

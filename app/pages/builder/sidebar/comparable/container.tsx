@@ -7,18 +7,18 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '~/components/ui/dialog';
-import { type Event, type ServicePackage, type Settings } from '~/types/api';
+import { type Event, type Bundle, type Settings } from '~/types/api';
 import { Button } from '~/components/ui/button';
 import { Typography } from '~/components/ui/typography';
 import { calculateBundlePrice } from '../utils';
 
 type Props = {
   title?: string;
-  actionText: string;
-  bundles: ServicePackage[];
+  actionText?: string;
+  bundles: Bundle[];
   events: Event[];
   settings: Settings;
-  onSelect: (servicePackage: ServicePackage) => void;
+  onSelect: (servicePackage: Bundle) => void;
 };
 
 const ComparableContainer = ({
@@ -31,7 +31,7 @@ const ComparableContainer = ({
 }: Props) => {
   const headers = useRef([
     ...new Set(
-      bundles.flatMap((bundle) => bundle.comparable).flatMap((com) => com.label)
+      bundles.flatMap((bundle) => bundle.comparables).flatMap((com) => com.title)
     ),
   ]);
 
@@ -70,18 +70,18 @@ const ComparableContainer = ({
                   <Typography>{header}</Typography>
                 </div>
                 {bundles.map((bundle) => {
-                  const comp = bundle.comparable.find(
-                    (comp) => comp.label === header
+                  const comp = bundle.comparables.find(
+                    (comp) => comp.title === header
                   );
 
-                  if (comp?.type === 'icon') {
+                  if (comp?.icon) {
                     return (
                       <div
-                        key={comp?.label}
+                        key={comp?.title}
                         className='flex justify-center items-center border-t pt-3'
                       >
                         <img
-                          src={`/icons/${comp.value}`}
+                          src={`/icons/${comp.icon}`}
                           height={20}
                           width={20}
                         />
@@ -91,10 +91,10 @@ const ComparableContainer = ({
 
                   return (
                     <div
-                      key={comp?.label}
+                      key={comp?.title}
                       className='flex justify-center items-center border-t pt-3'
                     >
-                      <Typography>{comp?.value}</Typography>
+                      <Typography>{comp?.text}</Typography>
                     </div>
                   );
                 })}

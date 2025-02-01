@@ -3,6 +3,7 @@ export type Settings = {
     price: number;
     firstPrice: number;
   };
+  translations?: Record<string, string>;
 };
 
 export type Section = ServicePackageSection | EventPackageSection;
@@ -13,7 +14,7 @@ export type ServicePackageSection = {
   description?: string;
   coverUrl?: string;
   slug: 'photography' | 'cinematography';
-  type: 'package';
+  type: 'service';
   metadata: ServicePackageMetadata;
 };
 
@@ -31,9 +32,8 @@ export type ServicePackageMetadata = {
   id: number;
   title?: string;
   description?: string;
-  packages: ServicePackage[];
+  bundles: Bundle[];
   addons: Service[];
-  extras: ServicePackageExtras;
 };
 
 export type ServicePackageExtras = {
@@ -44,17 +44,20 @@ export type ServicePackageExtras = {
   comparePackagesText: string;
 };
 
-export type ServicePackage = {
+export type Bundle = {
   id: number;
   title: string;
   description?: string;
+  type: 'event' | 'service';
   price: number;
   addons: Service[];
-  comparable: {
-    label: string;
-    value: string | number;
-    type: 'icon' | 'string';
-  }[];
+  comparables: Comparable[];
+};
+
+export type Comparable = {
+  title: string;
+  text?: string;
+  icon?: string;
 };
 
 export type Service = {
@@ -70,7 +73,7 @@ export type EventPackageMetadata = {
   id: number;
   title?: string;
   description?: string;
-  packages: EventPackage[];
+  bundles: EventPackage[];
   eventTypes: EventType[];
 };
 
@@ -99,7 +102,7 @@ export type EventType = {
   description?: string;
 };
 
-export const isServicePackage = (entity: any): entity is ServicePackage =>
+export const isServicePackage = (entity: any): entity is Bundle =>
   entity.price !== undefined;
 
 export const isEventPackage = (entity: any): entity is EventPackage =>

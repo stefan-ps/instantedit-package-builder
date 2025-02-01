@@ -25,7 +25,7 @@ export function EventConfigurator({
   const config = useAppSelector((state) => state.builder.configs[slug]);
 
   const groupedEvents = useMemo(() => {
-    const allEvents = metadata.packages.flatMap((item) => item.events);
+    const allEvents = metadata.bundles.flatMap((item) => item.events);
 
     const uniqueEvents = Array.from(
       new Map(allEvents.map((event) => [event.id, event])).values()
@@ -70,12 +70,12 @@ export function EventConfigurator({
 
         const defaultPhotography = pageConfig.sections
           .find((section) => section.slug === 'photography')
-          ?.metadata.packages.find(
+          ?.metadata.bundles.find(
             (bundle) => bundle.id === servicePackage.photographyDefaultId
           );
         const defaultCinematography = pageConfig.sections
           .find((section) => section.slug === 'cinematography')
-          ?.metadata.packages.find(
+          ?.metadata.bundles.find(
             (bundle) => bundle.id === servicePackage.cinematographyDefaultId
           );
         dispatch(
@@ -95,7 +95,7 @@ export function EventConfigurator({
         if (isSelected) {
           if (eventSelector[event.type].length > 1) {
             // Downgrade bundle
-            const singleEventPackage = metadata.packages.find(
+            const singleEventPackage = metadata.bundles.find(
               (bundle) => bundle.events.length === 1
             );
             dispatch(addPackage({ slug: slug, package: singleEventPackage }));
@@ -116,7 +116,7 @@ export function EventConfigurator({
           }
         } else {
           // Upgrade bundle to first that contains this event
-          const singleEventPackage = metadata.packages
+          const singleEventPackage = metadata.bundles
             .filter(
               (bundle) =>
                 bundle.events.filter((ev) => ev.id === event.id).length > 0
@@ -150,7 +150,7 @@ export function EventConfigurator({
             }));
           } else if (eventSelector[event.type]?.length === 2) {
             // Downgrade bundle but keep last pre-ceremony event
-            const singleEventPackage = metadata.packages
+            const singleEventPackage = metadata.bundles
               .filter(
                 (bundle) =>
                   bundle.events.filter((ev) => ev.type === 'pre-ceremony')
@@ -166,7 +166,7 @@ export function EventConfigurator({
             }));
           } else if (eventSelector[event.type]?.length === 1) {
             // Downgrade bundle and remove pre-ceremony events
-            const singleEventPackage = metadata.packages
+            const singleEventPackage = metadata.bundles
               .filter(
                 (bundle) =>
                   bundle.events.filter((ev) => ev.type === 'pre-ceremony')
@@ -194,7 +194,7 @@ export function EventConfigurator({
           let singleEventPackage: EventPackage | undefined;
 
           if ((eventSelector[event.type] ?? []).length === 0) {
-            singleEventPackage = metadata.packages.find(
+            singleEventPackage = metadata.bundles.find(
               (bundle) =>
                 bundle.events.filter((ev) => ev.type === event.type).length ===
                 1
@@ -203,7 +203,7 @@ export function EventConfigurator({
 
           if (!singleEventPackage) {
             singleEventPackage =
-              metadata.packages
+              metadata.bundles
                 .filter(
                   (bundle) =>
                     bundle.events.filter((ev) => ev.id === event.id).length >
@@ -266,7 +266,7 @@ export function EventConfigurator({
             </Typography>
           )}
           <ul className={cn('flex flex-col gap-2')}>
-            {metadata.packages.map((element) => (
+            {metadata.bundles.map((element) => (
               <li
                 key={element.id}
                 className={cn(

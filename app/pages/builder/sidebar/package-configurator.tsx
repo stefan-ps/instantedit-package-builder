@@ -14,7 +14,7 @@ import { useAppDispatch, useAppSelector } from '~/store/hooks';
 import type {
   Section,
   Service,
-  ServicePackage,
+  Bundle,
   ServicePackageSection,
 } from '~/types/api';
 import { calculateBundlePrice } from './utils';
@@ -37,7 +37,7 @@ export function PackageConfigurator({
   const addons = useMemo(() => {
     return [
       ...(metadata.addons ?? []),
-      ...(metadata.packages.find(
+      ...(metadata.bundles.find(
         (servicePackage) => servicePackage.id === config?.package?.id
       )?.addons ?? []),
     ];
@@ -81,7 +81,7 @@ export function PackageConfigurator({
   );
 
   const onPackageClickHandler = useCallback(
-    (servicePackage: ServicePackage) => {
+    (servicePackage: Bundle) => {
       if (config?.package?.id === servicePackage.id) {
         dispatch(removePackage({ slug: slug }));
       } else {
@@ -117,8 +117,8 @@ export function PackageConfigurator({
         <div>
           <ComparableContainer
             title={title}
-            actionText={metadata.extras.comparePackagesText}
-            bundles={metadata.packages}
+            actionText={settings.translations?.comparePackagesText}
+            bundles={metadata.bundles}
             events={eventConfig?.events ?? []}
             settings={settings}
             onSelect={onPackageClickHandler}
@@ -133,7 +133,7 @@ export function PackageConfigurator({
             </Typography>
           )}
           <ul className={cn('flex flex-col gap-2')}>
-            {metadata.packages.map((element) => (
+            {metadata.bundles.map((element) => (
               <li
                 key={element.id}
                 className={cn(
@@ -169,17 +169,17 @@ export function PackageConfigurator({
           </ul>
           <div className='flex flex-row justify-between items-center'>
             <Typography variant={'small'} appearance={'muted'}>
-              {metadata.extras.helpText}
+              {settings.translations?.helpText}
             </Typography>
-            <Button variant={'link'}>{metadata.extras.helpActionText}</Button>
+            <Button variant={'link'}>{settings.translations?.helpActionText}</Button>
           </div>
         </div>
         <div>
           {addons.length > 0 && (
             <>
-              {metadata.extras.addonsTitleText && (
+              {settings.translations?.addonsTitleText && (
                 <Typography variant={'h4'} className='mb-3'>
-                  {metadata.extras.addonsTitleText}
+                  {settings.translations?.addonsTitleText}
                 </Typography>
               )}
               {addonsList}

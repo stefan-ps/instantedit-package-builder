@@ -16,7 +16,7 @@ const CartCard = () => {
     () =>
       Object.values(config).reduce((acc, curr, _, array) => {
         let total = acc;
-        if (isServicePackage(curr.package)) {
+        if (curr.package && isServicePackage(curr.package)) {
           total += calculateBundlePrice(
             curr.package,
             config.event?.events ?? [],
