@@ -36,7 +36,7 @@ export function PackageConfigurator({
 
   const addons = useMemo(() => {
     return [
-      ...(metadata.addons ?? []),
+      ...(metadata.addons.map((addon) => addon.service) ?? []),
       ...(metadata.bundles.find(
         (servicePackage) => servicePackage.id === config?.package?.id
       )?.addons ?? []),
@@ -45,37 +45,35 @@ export function PackageConfigurator({
 
   const addonsList = useMemo(
     () => (
-      <>
-        <ul className={cn('flex flex-col gap-2')}>
-          {addons.map((element) => (
-            <li
-              key={element.id}
-              className={cn(
-                'flex flex-col gap-3 border-2 rounded bg-white px-4 py-3 hover:bg-primary/10 hover:border-primary/10',
-                {
-                  'border-primary text-primary bg-primary/20':
-                    config?.addons?.find((addon) => addon.id === element.id),
-                }
-              )}
-              onClick={() => onAddonClickHandler(element)}
-            >
-              <div className='flex flex-row justify-between items-center'>
-                <Typography>{element.title}</Typography>
-                {element.price && (
-                  <Typography variant={'small'} appearance={'muted'}>
-                    {formatCurrency(element.price)}
-                  </Typography>
-                )}
-              </div>
-              {element.description && (
+      <ul className={cn('flex flex-col gap-2')}>
+        {addons.map((element) => (
+          <li
+            key={element.id}
+            className={cn(
+              'flex flex-col gap-3 border-2 rounded bg-white px-4 py-3 hover:bg-primary/10 hover:border-primary/10',
+              {
+                'border-primary text-primary bg-primary/20':
+                  config?.addons?.find((addon) => addon.id === element.id),
+              }
+            )}
+            onClick={() => onAddonClickHandler(element)}
+          >
+            <div className='flex flex-row justify-between items-center'>
+              <Typography>{element.title}</Typography>
+              {element.price && (
                 <Typography variant={'small'} appearance={'muted'}>
-                  {element.description}
+                  {formatCurrency(element.price)}
                 </Typography>
               )}
-            </li>
-          ))}
-        </ul>
-      </>
+            </div>
+            {element.description && (
+              <Typography variant={'small'} appearance={'muted'}>
+                {element.description}
+              </Typography>
+            )}
+          </li>
+        ))}
+      </ul>
     ),
     [addons, config]
   );
@@ -171,7 +169,9 @@ export function PackageConfigurator({
             <Typography variant={'small'} appearance={'muted'}>
               {settings.translations?.helpText}
             </Typography>
-            <Button variant={'link'}>{settings.translations?.helpActionText}</Button>
+            <Button variant={'link'}>
+              {settings.translations?.helpActionText}
+            </Button>
           </div>
         </div>
         <div>

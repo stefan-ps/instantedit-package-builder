@@ -10,13 +10,16 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export async function clientLoader({ params }: Route.LoaderArgs) {
-  const product = await fetch('https://instantedit-package-builder-api.onrender.com/api/section');
+  const product = await fetch('http://localhost:3000/api/section');
   return await product.json();
 }
 
 export default function Home({ loaderData }: Route.ComponentProps) {
   return (
-    <BuilderProvider sections={loaderData.sections} settings={loaderData.settings}>
+    <BuilderProvider
+      sections={loaderData.sections}
+      settings={loaderData.settings}
+    >
       <Builder />
     </BuilderProvider>
   );

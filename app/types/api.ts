@@ -6,7 +6,10 @@ export type Settings = {
   translations?: Record<string, string>;
 };
 
-export type Section = ServicePackageSection | EventPackageSection;
+export type Section =
+  | ServicePackageSection
+  | EventPackageSection
+  | ExtraSection;
 
 export type ServicePackageSection = {
   id: number;
@@ -28,12 +31,30 @@ export type EventPackageSection = {
   metadata: EventPackageMetadata;
 };
 
+export type ExtraSection = {
+  id: number;
+  title: string;
+  description?: string;
+  coverUrl?: string;
+  slug: 'extra';
+  type: 'extra';
+  metadata: ServicePackageMetadata;
+};
+
 export type ServicePackageMetadata = {
   id: number;
   title?: string;
   description?: string;
   bundles: Bundle[];
-  addons: Service[];
+  addons: MetadataService[];
+};
+
+export type MetadataService = {
+  id: number;
+  yes: string;
+  no: string;
+  defaultYes: boolean;
+  service: Service;
 };
 
 export type ServicePackageExtras = {
@@ -65,6 +86,7 @@ export type Service = {
   title: string;
   description?: string;
   price: number;
+  isRecurring: boolean;
 };
 
 export type Addon = Service;

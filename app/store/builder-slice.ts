@@ -1,11 +1,5 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import type {
-  Addon,
-  Event,
-  EventPackage,
-  Section,
-  Bundle,
-} from '~/types/api';
+import type { Addon, Event, EventPackage, Section, Bundle } from '~/types/api';
 
 export type ConfigSection = {
   slug: Section['slug'];
@@ -73,7 +67,19 @@ export const builderSlice = createSlice({
     ) => {
       const sectionConfiguration = state.configs[action.payload.slug];
       if (sectionConfiguration) {
-        sectionConfiguration.addons.push(action.payload.addon);
+        if (
+          !sectionConfiguration.addons.find(
+            (addon) => addon.id === action.payload.addon.id
+          )
+        ) {
+          sectionConfiguration.addons.push(action.payload.addon);
+        }
+      } else {
+        state.configs[action.payload.slug] = {
+          package: undefined,
+          addons: [action.payload.addon],
+          events: [],
+        };
       }
     },
     removeAddon: (

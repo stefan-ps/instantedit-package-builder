@@ -4,6 +4,7 @@ import type { Section as SectionType } from '~/types/api';
 import { useSection } from './use-section';
 import { useEffect, useRef } from 'react';
 import { useBuilderContext } from '~/providers/builder-provider';
+import ExtraConfigurator from './extra-configurator';
 
 type Props = { id: SectionType['id']; type: SectionType['type'] };
 
@@ -40,6 +41,7 @@ export function Section({ id }: Props) {
     <div className='px-5 pb-10 pt-20' ref={elementRef}>
       {section.type === 'event' && <EventConfigurator {...section} />}
       {section.type === 'service' && <PackageConfigurator {...section} />}
+      {section.type === 'extra' && <ExtraConfigurator {...section} />}
     </div>
   );
 }
