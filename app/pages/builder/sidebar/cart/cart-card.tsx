@@ -7,6 +7,7 @@ import { isServicePackage } from '~/types/api';
 import { useMemo } from 'react';
 import { useBuilderContext } from '~/providers/builder-provider';
 import { calculateBundlePrice } from '../utils';
+import ReserveDialog from './reserve-dialog';
 
 const CartCard = () => {
   const { settings } = useBuilderContext();
@@ -56,9 +57,7 @@ const CartCard = () => {
               Estimated Price
             </Typography>
           </div>
-          <Button variant={'default'} size={'lg'}>
-            Reserve Now
-          </Button>
+          <ReserveDialog />
         </div>
         <div className='flex flex-col xl:flex-row gap-5 bg-transparent'>
           <Button variant={'outline'} size={'lg'} className='grow'>

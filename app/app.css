@@ -78,3 +78,8 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+/* Target the Datepicker wrapper */
+.datepicker-light-mode .react-datepicker {
+  color-scheme: light !important;
+}
