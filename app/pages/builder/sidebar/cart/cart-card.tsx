@@ -8,19 +8,20 @@ import { useMemo } from 'react';
 import { useBuilderContext } from '~/providers/builder-provider';
 import { calculateBundlePrice } from '../utils';
 import ReserveDialog from './reserve-dialog';
+import { selectSections } from '~/store/config.selector';
 
 const CartCard = () => {
   const { settings } = useBuilderContext();
-  const config = useAppSelector((state) => state.builder.configs);
+  const sections = useAppSelector(selectSections);
 
   const calculatedTotal = useMemo(
     () =>
-      Object.values(config).reduce((acc, curr, _, array) => {
+      Object.values(sections).reduce((acc, curr, _, array) => {
         let total = acc;
         if (curr.package && isServicePackage(curr.package)) {
           total += calculateBundlePrice(
             curr.package,
-            config.event?.events ?? [],
+            sections.event?.events ?? [],
             settings
           );
         }
@@ -30,7 +31,7 @@ const CartCard = () => {
         });
         return total;
       }, 0),
-    [config]
+    [sections]
   );
 
   const formattedTotal = new Intl.NumberFormat('en-US', {
@@ -38,7 +39,7 @@ const CartCard = () => {
     currency: 'USD',
   }).format(calculatedTotal);
 
-  if (Object.values(config).length === 0) {
+  if (Object.values(sections).length === 0) {
     return;
   }
 

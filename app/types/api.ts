@@ -45,7 +45,7 @@ export type ServicePackageMetadata = {
   id: number;
   title?: string;
   description?: string;
-  bundles: Bundle[];
+  bundles: ServiceBundle[];
   addons: MetadataService[];
 };
 
@@ -69,8 +69,20 @@ export type Bundle = {
   id: number;
   title: string;
   description?: string;
-  type: 'event' | 'service';
+  type: 'service' | 'event';
   price: number;
+  isRecurring: boolean;
+};
+
+export type EventBundle = Bundle & {
+  type: 'event';
+  photographyDefaultId?: number;
+  cinematographyDefaultId?: number;
+  duration: number;
+  events: Event[];
+};
+export type ServiceBundle = Bundle & {
+  type: 'service';
   addons: Service[];
   comparables: Comparable[];
 };
@@ -95,25 +107,26 @@ export type EventPackageMetadata = {
   id: number;
   title?: string;
   description?: string;
-  bundles: EventPackage[];
+  bundles: EventBundle[];
   eventTypes: EventType[];
 };
 
-export type EventPackage = {
-  id: number;
-  title: string;
-  description?: string;
-  duration?: number;
-  events: Event[];
-  photographyDefaultId?: number;
-  cinematographyDefaultId?: number;
-};
+// export type EventPackage = {
+//   id: number;
+//   title: string;
+//   description?: string;
+//   type: 'event';
+//   duration?: number;
+//   events: Event[];
+//   photographyDefaultId?: number;
+//   cinematographyDefaultId?: number;
+// };
 
 export type Event = {
   id: number;
   title: string;
   description?: string;
-  duration?: number;
+  durationInHours?: number;
   type: 'ceremony' | 'pre-ceremony'; //EventType;
 };
 
@@ -124,8 +137,8 @@ export type EventType = {
   description?: string;
 };
 
-export const isServicePackage = (entity: any): entity is Bundle =>
-  entity.price !== undefined;
+export const isServicePackage = (entity: any): entity is ServiceBundle =>
+  entity.type === 'service';
 
-export const isEventPackage = (entity: any): entity is EventPackage =>
-  entity.events !== undefined;
+export const isEventPackage = (entity: any): entity is EventBundle =>
+  entity.type === 'event';

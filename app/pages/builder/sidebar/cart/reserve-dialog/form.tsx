@@ -24,6 +24,15 @@ import {
 } from '~/components/ui/popover';
 import { format } from 'date-fns';
 import { useAppSelector } from '~/store/hooks';
+import type { Booking } from '~/types/booking';
+import {
+  selectAddons,
+  selectSection,
+  selectServiceBundles,
+} from '~/store/config.selector';
+import { useDispatch } from 'react-redux';
+import { saveBooking } from '~/store/builder-slice';
+import { redirect } from 'react-router';
 
 const formSchema = z.object({
   firstName: z.string().min(2, {
@@ -40,18 +49,25 @@ const formSchema = z.object({
   }),
   venues: z.array(
     z.object({
-      address: z.string(),
+      location: z.string(),
       date: z.date(),
     })
   ),
 });
 
 const ReserveForm = () => {
-  const config = useAppSelector((state) => state.builder.configs.event);
+  const dispatch = useDispatch();
+  const eventSection = useAppSelector(selectSection('event'));
+  const packages = useAppSelector(selectServiceBundles);
+  const addons = useAppSelector(selectAddons);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       firstName: '',
+      lastName: '',
+      phone: '',
+      email: '',
     },
   });
 
@@ -61,16 +77,27 @@ const ReserveForm = () => {
   });
 
   // 2. Define a submit handler.
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
-  };
+  const onSubmit = useCallback(
+    ({ venues, ...contact }: z.infer<typeof formSchema>) => {
+      // Do something with the form values.
+      // ✅ This will be type-safe and validated.
+      const booking: Booking = {
+        contact,
+        venues,
+        events: eventSection?.events ?? [],
+        bundles: packages,
+        addons: addons,
+      };
+
+      dispatch(saveBooking(booking));
+    },
+    [eventSection?.events, packages]
+  );
 
   const addVenue = useCallback(() => {
-    if (fields.length < (config?.events.length ?? 0))
-      append({ address: '', date: new Date() });
-  }, [config, fields]);
+    if (fields.length < (eventSection?.events.length ?? 0))
+      append({ location: '', date: new Date() });
+  }, [eventSection, fields]);
 
   return (
     <Form {...form}>
@@ -138,7 +165,7 @@ const ReserveForm = () => {
               </Typography>
               <FormField
                 control={form.control}
-                name={`venues.${index}.address`}
+                name={`venues.${index}.location`}
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Location</FormLabel>
@@ -188,7 +215,7 @@ const ReserveForm = () => {
               />
             </div>
           ))}
-          {fields.length < (config?.events.length ?? 0) && (
+          {fields.length < (eventSection?.events.length ?? 0) && (
             <div>
               <Button type='button' variant={'link'} onClick={addVenue}>
                 <PlusSquare size={24} />

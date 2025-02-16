@@ -1,16 +1,17 @@
 import { Typography } from '~/components/ui/typography';
-import type { Bundle } from '~/types/api';
+import type { Bundle, ServiceBundle } from '~/types/api';
 import { calculateBundlePrice } from '../utils';
 import { useAppSelector } from '~/store/hooks';
 import { useBuilderContext } from '~/providers/builder-provider';
+import { selectSection } from '~/store/config.selector';
 
 type Props = {
-  item: Bundle;
+  item: ServiceBundle;
 };
 
 const PackageSummary = ({ item }: Props) => {
   const { settings } = useBuilderContext();
-  const eventConfig = useAppSelector((state) => state.builder.configs.event);
+  const eventSection = useAppSelector(selectSection('event'));
 
   return (
     <div key={item.id}>
@@ -26,7 +27,7 @@ const PackageSummary = ({ item }: Props) => {
             style: 'currency',
             currency: 'USD',
           }).format(
-            calculateBundlePrice(item, eventConfig?.events ?? [], settings)
+            calculateBundlePrice(item, eventSection?.events ?? [], settings)
           )}
         </Typography>
       </div>

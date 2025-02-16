@@ -5,10 +5,10 @@ import { formatCurrency } from '~/lib/format';
 import { cn } from '~/lib/utils';
 import { useBuilderContext } from '~/providers/builder-provider';
 import {
-  addAddon,
-  addPackage,
+  insertAddon,
+  insertBundle,
   removeAddon,
-  removePackage,
+  removeBundle,
 } from '~/store/builder-slice';
 import { useAppDispatch, useAppSelector } from '~/store/hooks';
 import type {
@@ -19,6 +19,7 @@ import type {
 } from '~/types/api';
 import { calculateBundlePrice } from './utils';
 import ComparableContainer from './comparable/container';
+import { selectSection } from '~/store/config.selector';
 
 type Props = ServicePackageSection & { slug: Section['slug'] };
 
@@ -29,8 +30,8 @@ export function PackageConfigurator({
   metadata,
 }: Props) {
   const { settings } = useBuilderContext();
-  const config = useAppSelector((state) => state.builder.configs[slug]);
-  const eventConfig = useAppSelector((state) => state.builder.configs.event);
+  const section = useAppSelector(selectSection(slug));
+  const eventSection = useAppSelector(selectSection('event'));
 
   const dispatch = useAppDispatch();
 
@@ -38,10 +39,10 @@ export function PackageConfigurator({
     return [
       ...(metadata.addons.map((addon) => addon.service) ?? []),
       ...(metadata.bundles.find(
-        (servicePackage) => servicePackage.id === config?.package?.id
+        (servicePackage) => servicePackage.id === section?.package?.id
       )?.addons ?? []),
     ];
-  }, [config]);
+  }, [section]);
 
   const addonsList = useMemo(
     () => (
@@ -53,7 +54,7 @@ export function PackageConfigurator({
               'flex flex-col gap-3 border-2 rounded bg-white px-4 py-3 hover:bg-primary/10 hover:border-primary/10',
               {
                 'border-primary text-primary bg-primary/20':
-                  config?.addons?.find((addon) => addon.id === element.id),
+                  section?.addons?.find((addon) => addon.id === element.id),
               }
             )}
             onClick={() => onAddonClickHandler(element)}
@@ -75,34 +76,34 @@ export function PackageConfigurator({
         ))}
       </ul>
     ),
-    [addons, config]
+    [addons, section]
   );
 
   const onPackageClickHandler = useCallback(
     (servicePackage: Bundle) => {
-      if (config?.package?.id === servicePackage.id) {
-        dispatch(removePackage({ slug: slug }));
+      if (section?.package?.id === servicePackage.id) {
+        dispatch(removeBundle({ slug: slug }));
       } else {
         dispatch(
-          addPackage({
+          insertBundle({
             slug: slug,
             package: servicePackage,
           })
         );
       }
     },
-    [config]
+    [section]
   );
 
   const onAddonClickHandler = useCallback(
     (service: Service) => {
-      if (config?.addons?.find((addon) => addon.id === service.id)) {
+      if (section?.addons?.find((addon) => addon.id === service.id)) {
         dispatch(removeAddon({ slug: slug, addon: service }));
       } else {
-        dispatch(addAddon({ slug: slug, addon: service }));
+        dispatch(insertAddon({ slug: slug, addon: service }));
       }
     },
-    [config]
+    [section]
   );
 
   return (
@@ -117,7 +118,7 @@ export function PackageConfigurator({
             title={title}
             actionText={settings.translations?.comparePackagesText}
             bundles={metadata.bundles}
-            events={eventConfig?.events ?? []}
+            events={eventSection?.events ?? []}
             settings={settings}
             onSelect={onPackageClickHandler}
           />
@@ -138,7 +139,7 @@ export function PackageConfigurator({
                   'flex flex-col gap-3 border-2 rounded bg-white px-4 py-3 hover:bg-primary/10 hover:border-primary/10',
                   {
                     'border-primary text-primary bg-primary/20':
-                      config?.package?.id === element.id,
+                      section?.package?.id === element.id,
                   }
                 )}
                 onClick={() => onPackageClickHandler(element)}
@@ -150,7 +151,7 @@ export function PackageConfigurator({
                       {formatCurrency(
                         calculateBundlePrice(
                           element,
-                          eventConfig?.events ?? [],
+                          eventSection?.events ?? [],
                           settings
                         )
                       )}

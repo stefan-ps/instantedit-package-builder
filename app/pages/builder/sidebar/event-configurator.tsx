@@ -2,15 +2,16 @@ import { Typography } from '~/components/ui/typography';
 import type {
   Addon,
   Event,
-  EventPackage,
+  EventBundle,
   EventPackageSection,
 } from '~/types/api';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '~/store/hooks';
-import { addPackage, removePackage, updateEvents } from '~/store/builder-slice';
+import { insertBundle, removeBundle, updateEvents } from '~/store/builder-slice';
 import { cn } from '~/lib/utils';
 import { Badge } from '~/components/ui/badge';
 import { useBuilderContext } from '~/providers/builder-provider';
+import { selectSection } from '~/store/config.selector';
 
 type Props = EventPackageSection;
 
@@ -22,7 +23,7 @@ export function EventConfigurator({
 }: Props) {
   const pageConfig = useBuilderContext();
   const dispatch = useAppDispatch();
-  const config = useAppSelector((state) => state.builder.configs[slug]);
+  const section = useAppSelector(selectSection(slug));
 
   const groupedEvents = useMemo(() => {
     const allEvents = metadata.bundles.flatMap((item) => item.events);
@@ -50,11 +51,11 @@ export function EventConfigurator({
   );
 
   const onPackageClickHandler = useCallback(
-    (servicePackage: EventPackage) => {
-      if (config?.package?.id === servicePackage.id) {
-        dispatch(removePackage({ slug: slug }));
+    (servicePackage: EventBundle) => {
+      if (section?.package?.id === servicePackage.id) {
+        dispatch(removeBundle({ slug: slug }));
       } else {
-        dispatch(addPackage({ slug: slug, package: servicePackage }));
+        dispatch(insertBundle({ slug: slug, package: servicePackage }));
 
         setEventSelector(() => {
           return servicePackage.events.reduce((prev, curr) => {
@@ -79,14 +80,14 @@ export function EventConfigurator({
             (bundle) => bundle.id === servicePackage.cinematographyDefaultId
           );
         dispatch(
-          addPackage({ slug: 'photography', package: defaultPhotography })
+          insertBundle({ slug: 'photography', package: defaultPhotography })
         );
         dispatch(
-          addPackage({ slug: 'cinematography', package: defaultCinematography })
+          insertBundle({ slug: 'cinematography', package: defaultCinematography })
         );
       }
     },
-    [config, groupedEvents]
+    [section, groupedEvents]
   );
 
   const onEventClickHandler = useCallback(
@@ -98,20 +99,20 @@ export function EventConfigurator({
             const singleEventPackage = metadata.bundles.find(
               (bundle) => bundle.events.length === 1
             );
-            dispatch(addPackage({ slug: slug, package: singleEventPackage }));
-            setEventSelector(() => {
-              return (singleEventPackage as EventPackage).events.reduce(
-                (prev, curr) => {
-                  if (prev[curr.type]) {
-                    prev[curr.type] = [...prev[curr.type], curr];
-                  } else {
-                    prev[curr.type] = [curr];
-                  }
 
-                  return prev;
-                },
-                {} as { [id: string]: Event[] }
-              );
+            if (!singleEventPackage) return;
+
+            dispatch(insertBundle({ slug: slug, package: singleEventPackage }));
+            setEventSelector(() => {
+              return singleEventPackage?.events.reduce((prev, curr) => {
+                if (prev[curr.type]) {
+                  prev[curr.type] = [...prev[curr.type], curr];
+                } else {
+                  prev[curr.type] = [curr];
+                }
+
+                return prev;
+              }, {} as { [id: string]: Event[] });
             });
           }
         } else {
@@ -122,20 +123,17 @@ export function EventConfigurator({
                 bundle.events.filter((ev) => ev.id === event.id).length > 0
             )
             ?.sort((a, b) => a.events.length - b.events.length)[0];
-          dispatch(addPackage({ slug: slug, package: singleEventPackage }));
+          dispatch(insertBundle({ slug: slug, package: singleEventPackage }));
           setEventSelector(() => {
-            return (singleEventPackage as EventPackage).events.reduce(
-              (prev, curr) => {
-                if (prev[curr.type]) {
-                  prev[curr.type] = [...prev[curr.type], curr];
-                } else {
-                  prev[curr.type] = [curr];
-                }
+            return singleEventPackage.events.reduce((prev, curr) => {
+              if (prev[curr.type]) {
+                prev[curr.type] = [...prev[curr.type], curr];
+              } else {
+                prev[curr.type] = [curr];
+              }
 
-                return prev;
-              },
-              {} as { [id: string]: Event[] }
-            );
+              return prev;
+            }, {} as { [id: string]: Event[] });
           });
         }
       } else if (event.type === 'pre-ceremony') {
@@ -157,7 +155,7 @@ export function EventConfigurator({
                     .length === 1
               )
               ?.sort((a, b) => b.events.length - a.events.length)[0];
-            dispatch(addPackage({ slug: slug, package: singleEventPackage }));
+            dispatch(insertBundle({ slug: slug, package: singleEventPackage }));
             setEventSelector((previous) => ({
               ...previous,
               [event.type]: previous[event.type].filter(
@@ -173,25 +171,22 @@ export function EventConfigurator({
                     .length === 0
               )
               ?.sort((a, b) => b.events.length - a.events.length)[0];
-            dispatch(addPackage({ slug: slug, package: singleEventPackage }));
+            dispatch(insertBundle({ slug: slug, package: singleEventPackage }));
             setEventSelector(() => {
-              return (singleEventPackage as EventPackage).events.reduce(
-                (prev, curr) => {
-                  if (prev[curr.type]) {
-                    prev[curr.type] = [...prev[curr.type], curr];
-                  } else {
-                    prev[curr.type] = [curr];
-                  }
+              return singleEventPackage.events.reduce((prev, curr) => {
+                if (prev[curr.type]) {
+                  prev[curr.type] = [...prev[curr.type], curr];
+                } else {
+                  prev[curr.type] = [curr];
+                }
 
-                  return prev;
-                },
-                {} as { [id: string]: Event[] }
-              );
+                return prev;
+              }, {} as { [id: string]: Event[] });
             });
           }
         } else {
           // Upgrade to first that contains this pre-ceremony event
-          let singleEventPackage: EventPackage | undefined;
+          let singleEventPackage: EventBundle | undefined;
 
           if ((eventSelector[event.type] ?? []).length === 0) {
             singleEventPackage = metadata.bundles.find(
@@ -220,7 +215,7 @@ export function EventConfigurator({
             singleEventPackage &&
             (eventSelector[event.type] ?? []).length <= 1
           ) {
-            dispatch(addPackage({ slug: slug, package: singleEventPackage }));
+            dispatch(insertBundle({ slug: slug, package: singleEventPackage }));
           }
 
           setEventSelector((previous) => ({
@@ -238,7 +233,7 @@ export function EventConfigurator({
         }
       }
     },
-    [config, eventSelector]
+    [section, eventSelector]
   );
 
   useEffect(() => {
@@ -273,7 +268,7 @@ export function EventConfigurator({
                   'flex flex-col gap-3 border-2 rounded bg-white px-4 py-3 hover:bg-primary/10 hover:border-primary/10',
                   {
                     'border-primary text-primary bg-primary/20':
-                      config?.package?.id === element.id,
+                      section?.package?.id === element.id,
                   }
                 )}
                 onClick={() => onPackageClickHandler(element)}

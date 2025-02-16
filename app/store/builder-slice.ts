@@ -1,9 +1,15 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import type { Addon, Event, EventPackage, Section, Bundle } from '~/types/api';
+import type {
+  Addon,
+  Event,
+  Section,
+  Bundle,
+} from '~/types/api';
+import type { Booking } from '~/types/booking';
 
 export type ConfigSection = {
   slug: Section['slug'];
-  package?: Bundle | EventPackage;
+  package?: Bundle;
   addons?: Addon[];
   events?: Event[];
 };
@@ -13,12 +19,13 @@ export type BuilderSliceType = {
     Record<
       Section['slug'],
       {
-        package?: Bundle | EventPackage;
+        package?: Bundle;
         addons: Addon[];
         events: Event[];
       }
     >
   >;
+  booking?: Booking;
 };
 
 const initialState: BuilderSliceType = {
@@ -29,7 +36,7 @@ export const builderSlice = createSlice({
   name: 'builder',
   initialState,
   reducers: {
-    addPackage: (state, action: PayloadAction<ConfigSection>) => {
+    insertBundle: (state, action: PayloadAction<ConfigSection>) => {
       const sectionConfiguration = state.configs[action.payload.slug];
       if (!sectionConfiguration) {
         state.configs[action.payload.slug] = {
@@ -43,10 +50,7 @@ export const builderSlice = createSlice({
         sectionConfiguration.events = action.payload.events ?? [];
       }
     },
-    removePackage: (
-      state,
-      action: PayloadAction<{ slug: Section['slug'] }>
-    ) => {
+    removeBundle: (state, action: PayloadAction<{ slug: Section['slug'] }>) => {
       delete state.configs[action.payload.slug];
     },
     updateEvents: (state, action: PayloadAction<ConfigSection>) => {
@@ -61,7 +65,7 @@ export const builderSlice = createSlice({
         };
       }
     },
-    addAddon: (
+    insertAddon: (
       state,
       action: PayloadAction<{ slug: Section['slug']; addon: Addon }>
     ) => {
@@ -93,16 +97,21 @@ export const builderSlice = createSlice({
         );
       }
     },
+
+    saveBooking: (state, action: PayloadAction<Booking>) => {
+      state.booking = action.payload;
+    },
   },
 });
 
 // Action creators are generated for each case reducer function
 export const {
-  addPackage,
-  removePackage,
+  insertBundle,
+  removeBundle,
   updateEvents,
-  addAddon,
+  insertAddon,
   removeAddon,
+  saveBooking,
 } = builderSlice.actions;
 
 export default builderSlice.reducer;

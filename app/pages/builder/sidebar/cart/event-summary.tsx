@@ -1,10 +1,10 @@
 import React from 'react';
 import { Badge } from '~/components/ui/badge';
 import { Typography } from '~/components/ui/typography';
-import type { Event, EventPackage } from '~/types/api';
+import type { Event, EventBundle } from '~/types/api';
 
 type Props = {
-  item: EventPackage;
+  item: EventBundle;
   events: Event[];
 };
 

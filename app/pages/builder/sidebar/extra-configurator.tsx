@@ -3,36 +3,37 @@ import { useDispatch } from 'react-redux';
 import { Typography } from '~/components/ui/typography';
 import { formatCurrency } from '~/lib/format';
 import { cn } from '~/lib/utils';
-import { addAddon, removeAddon } from '~/store/builder-slice';
+import { insertAddon, removeAddon } from '~/store/builder-slice';
+import { selectSection } from '~/store/config.selector';
 import { useAppSelector } from '~/store/hooks';
 import type { ExtraSection, Section, Service } from '~/types/api';
 
 type Props = ExtraSection & { slug: Section['slug'] };
 
 const ExtraConfigurator = ({ title, description, slug, metadata }: Props) => {
-  const config = useAppSelector((state) => state.builder.configs[slug]);
+  const section = useAppSelector(selectSection(slug));
   const dispatch = useDispatch();
 
   useEffect(() => {
     metadata.addons.forEach((addon) => {
       if (addon.defaultYes) {
-        dispatch(addAddon({ slug, addon: addon.service }));
+        dispatch(insertAddon({ slug, addon: addon.service }));
       }
     });
   }, []);
 
   const onAddonClickHandler = useCallback(
     (service: Service) => {
-      if (config?.addons?.find((addon) => addon.id === service.id)) {
+      if (section?.addons?.find((addon) => addon.id === service.id)) {
         dispatch(removeAddon({ slug: slug, addon: service }));
       } else {
-        dispatch(addAddon({ slug: slug, addon: service }));
+        dispatch(insertAddon({ slug: slug, addon: service }));
       }
     },
-    [config]
+    [section]
   );
 
-  console.log(config);
+  console.log(section);
   return (
     <div>
       <div className='py-5 flex flex-row justify-between'>
@@ -50,10 +51,7 @@ const ExtraConfigurator = ({ title, description, slug, metadata }: Props) => {
           )}
           <ul className={cn('flex flex-col gap-2')}>
             {metadata.addons.map((element) => (
-              <li
-                key={element.id}
-                className={cn('flex flex-col gap-3 py-3')}
-              >
+              <li key={element.id} className={cn('flex flex-col gap-3 py-3')}>
                 <div className='flex flex-row justify-between items-center'>
                   <Typography>{element.service.title}</Typography>
                 </div>
@@ -69,7 +67,7 @@ const ExtraConfigurator = ({ title, description, slug, metadata }: Props) => {
                       'flex-1 flex flex-row justify-between gap-3 border-2 rounded bg-white px-4 py-3 hover:bg-primary/10 hover:border-primary/10',
                       {
                         'border-primary text-primary bg-primary/20':
-                          !config?.addons.find(
+                          !section?.addons.find(
                             (addon) => addon.id === element.service.id
                           ),
                       }
@@ -83,7 +81,7 @@ const ExtraConfigurator = ({ title, description, slug, metadata }: Props) => {
                       'flex-1 flex flex-row justify-between gap-3 border-2 rounded bg-white px-4 py-3 hover:bg-primary/10 hover:border-primary/10',
                       {
                         'border-primary text-primary bg-primary/20':
-                          !!config?.addons.find(
+                          !!section?.addons.find(
                             (addon) => addon.id === element.service.id
                           ),
                       }
