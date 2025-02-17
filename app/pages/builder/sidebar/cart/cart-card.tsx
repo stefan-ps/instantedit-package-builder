@@ -5,13 +5,12 @@ import CartSummary from './cart-summary';
 import { useAppSelector } from '~/store/hooks';
 import { isServicePackage } from '~/types/api';
 import { useMemo } from 'react';
-import { useBuilderContext } from '~/providers/builder-provider';
 import { calculateBundlePrice } from '../utils';
 import ReserveDialog from './reserve-dialog';
 import { selectSections } from '~/store/config.selector';
 
 const CartCard = () => {
-  const { settings } = useBuilderContext();
+  const { settings } = useAppSelector((state) => state.app.configuration);
   const sections = useAppSelector(selectSections);
 
   const calculatedTotal = useMemo(

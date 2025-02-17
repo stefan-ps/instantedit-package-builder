@@ -3,7 +3,6 @@ import { Button } from '~/components/ui/button';
 import { Typography } from '~/components/ui/typography';
 import { formatCurrency } from '~/lib/format';
 import { cn } from '~/lib/utils';
-import { useBuilderContext } from '~/providers/builder-provider';
 import {
   insertAddon,
   insertBundle,
@@ -29,7 +28,7 @@ export function PackageConfigurator({
   slug,
   metadata,
 }: Props) {
-  const { settings } = useBuilderContext();
+  const { settings } = useAppSelector((state) => state.app.configuration);
   const section = useAppSelector(selectSection(slug));
   const eventSection = useAppSelector(selectSection('event'));
 

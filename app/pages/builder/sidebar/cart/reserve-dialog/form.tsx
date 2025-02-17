@@ -4,7 +4,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -32,7 +31,7 @@ import {
 } from '~/store/config.selector';
 import { useDispatch } from 'react-redux';
 import { saveBooking } from '~/store/builder-slice';
-import { redirect } from 'react-router';
+import { useNavigate } from 'react-router';
 
 const formSchema = z.object({
   firstName: z.string().min(2, {
@@ -50,12 +49,13 @@ const formSchema = z.object({
   venues: z.array(
     z.object({
       location: z.string(),
-      date: z.date(),
+      date: z.number(),
     })
   ),
 });
 
 const ReserveForm = () => {
+  let navigate = useNavigate();
   const dispatch = useDispatch();
   const eventSection = useAppSelector(selectSection('event'));
   const packages = useAppSelector(selectServiceBundles);
@@ -90,24 +90,25 @@ const ReserveForm = () => {
       };
 
       dispatch(saveBooking(booking));
+      navigate('/summary');
     },
     [eventSection?.events, packages]
   );
 
   const addVenue = useCallback(() => {
     if (fields.length < (eventSection?.events.length ?? 0))
-      append({ location: '', date: new Date() });
+      append({ location: '', date: Date.now() });
   }, [eventSection, fields]);
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
-        <div className='grid grid-cols-2 gap-4'>
+        <div className='grid grid-cols-1 lg:grid-cols-2 gap-4'>
           <FormField
             control={form.control}
             name='firstName'
             render={({ field }) => (
-              <FormItem>
+              <FormItem className='flex flex-col gap-1 items-start'>
                 <FormLabel>First Name</FormLabel>
                 <FormControl>
                   <Input placeholder='First Name' {...field} />
@@ -120,7 +121,7 @@ const ReserveForm = () => {
             control={form.control}
             name='lastName'
             render={({ field }) => (
-              <FormItem>
+              <FormItem className='flex flex-col gap-1 items-start'>
                 <FormLabel>Last Name</FormLabel>
                 <FormControl>
                   <Input placeholder='Last Name' {...field} />
@@ -133,7 +134,7 @@ const ReserveForm = () => {
             control={form.control}
             name='phone'
             render={({ field }) => (
-              <FormItem>
+              <FormItem className='flex flex-col gap-1 items-start'>
                 <FormLabel>Phone</FormLabel>
                 <FormControl>
                   <Input placeholder='Phone' {...field} />
@@ -146,7 +147,7 @@ const ReserveForm = () => {
             control={form.control}
             name='email'
             render={({ field }) => (
-              <FormItem>
+              <FormItem className='flex flex-col gap-1 items-start'>
                 <FormLabel>Email</FormLabel>
                 <FormControl>
                   <Input placeholder='Email' {...field} />
@@ -159,15 +160,18 @@ const ReserveForm = () => {
 
         <div className='flex flex-col gap-4 py-10'>
           {fields.map((item, index) => (
-            <div key={item.id} className='grid grid-cols-2 gap-4'>
-              <Typography className='col-span-2 font-bold'>
+            <div
+              key={item.id}
+              className='grid grid-cols-1 lg:grid-cols-2 gap-4'
+            >
+              <Typography className='lg:col-span-2 text-left font-bold'>
                 Venue {index + 1}
               </Typography>
               <FormField
                 control={form.control}
                 name={`venues.${index}.location`}
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className='flex flex-col gap-1 items-start'>
                     <FormLabel>Location</FormLabel>
                     <FormControl>
                       <Input placeholder='Venue Address' {...field} />
@@ -180,7 +184,7 @@ const ReserveForm = () => {
                 control={form.control}
                 name={`venues.${index}.date`}
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className='flex flex-col gap-1 items-start'>
                     <FormLabel>Date & Time</FormLabel>
                     <FormControl>
                       <Popover>
@@ -198,8 +202,10 @@ const ReserveForm = () => {
                         <PopoverContent align='start' className='w-auto p-0'>
                           <div className='datepicker-light-mode'>
                             <DatePicker
-                              selected={field.value}
-                              onChange={field.onChange}
+                              selected={new Date(field.value)}
+                              onChange={(value) =>
+                                field.onChange(value?.getTime())
+                              }
                               timeInputLabel='Time:'
                               dateFormat='MM/dd/yyyy h:mm aa'
                               showTimeInput

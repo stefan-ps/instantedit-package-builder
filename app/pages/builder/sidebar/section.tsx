@@ -1,16 +1,17 @@
 import { EventConfigurator } from './event-configurator';
 import { PackageConfigurator } from './package-configurator';
 import type { Section as SectionType } from '~/types/api';
-import { useSection } from './use-section';
 import { useEffect, useRef } from 'react';
 import { useBuilderContext } from '~/providers/builder-provider';
 import ExtraConfigurator from './extra-configurator';
+import { useAppSelector } from '~/store/hooks';
+import { getSection } from '~/store/app.selector';
 
-type Props = { id: SectionType['id']; type: SectionType['type'] };
+type Props = SectionType;
 
-export function Section({ id }: Props) {
+export function Section({ id, slug }: Props) {
   const { setActiveSection } = useBuilderContext();
-  const section = useSection(id);
+  const section = useAppSelector((state) => getSection(state, slug));
   const elementRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -36,6 +37,10 @@ export function Section({ id }: Props) {
       }
     };
   }, []);
+
+  if (!section) {
+    return null;
+  }
 
   return (
     <div className='px-5 pb-10 pt-20' ref={elementRef}>

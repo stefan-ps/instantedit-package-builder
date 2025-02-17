@@ -1,8 +1,10 @@
 import React from 'react';
 import { useBuilderContext } from '~/providers/builder-provider';
+import { useAppSelector } from '~/store/hooks';
 
 const ImageCover = () => {
-  const { sections, activeSection } = useBuilderContext();
+  const sections = useAppSelector((state) => state.app.configuration.sections);
+  const { activeSection } = useBuilderContext();
 
   return (
     <img

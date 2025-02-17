@@ -1,11 +1,11 @@
 import { Button } from '~/components/ui/button';
 import { Typography } from '~/components/ui/typography';
 import { Section } from './section';
-import { useBuilderContext } from '~/providers/builder-provider';
 import CartCard from './cart/cart-card';
+import { useAppSelector } from '~/store/hooks';
 
 export function Sidebar() {
-  const { sections } = useBuilderContext();
+  const { sections } = useAppSelector((state) => state.app.configuration);
 
   return (
     <div className='relative'>

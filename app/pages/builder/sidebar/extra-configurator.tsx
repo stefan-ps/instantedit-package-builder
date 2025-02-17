@@ -33,7 +33,6 @@ const ExtraConfigurator = ({ title, description, slug, metadata }: Props) => {
     [section]
   );
 
-  console.log(section);
   return (
     <div>
       <div className='py-5 flex flex-row justify-between'>

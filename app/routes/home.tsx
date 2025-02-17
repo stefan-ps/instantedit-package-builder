@@ -1,6 +1,9 @@
 import { Builder } from '~/pages/builder/builder';
 import type { Route } from './+types/home';
 import { BuilderProvider } from '~/providers/builder-provider';
+import { useAppDispatch, useAppSelector } from '~/store/hooks';
+import { useEffect } from 'react';
+import { fetchAppConfiguration } from '~/store/app.slice';
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -9,17 +12,22 @@ export function meta({}: Route.MetaArgs) {
   ];
 }
 
-export async function clientLoader({ params }: Route.LoaderArgs) {
-  const product = await fetch('http://localhost:3000/api/section');
-  return await product.json();
-}
+export default function HomePage() {
+  const dispatch = useAppDispatch();
+  const { configuration, loading, error } = useAppSelector(
+    (state) => state.app
+  );
 
-export default function Home({ loaderData }: Route.ComponentProps) {
+  useEffect(() => {
+    dispatch(fetchAppConfiguration());
+  }, [dispatch]);
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error}</p>;
+  if (!configuration) return <p>Something went wrong</p>;
+
   return (
-    <BuilderProvider
-      sections={loaderData.sections}
-      settings={loaderData.settings}
-    >
+    <BuilderProvider>
       <Builder />
     </BuilderProvider>
   );

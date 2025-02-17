@@ -7,35 +7,27 @@ import React, {
 import type { Section, Settings } from '~/types/api';
 
 type BuilderContextType = {
-  settings: Settings;
-  sections: Section[];
-  activeSection: number;
+  activeSection?: number;
   setActiveSection: (section: number) => void;
 };
 
-const BuilderContext = React.createContext<BuilderContextType | null>(null);
+export const BuilderContext = React.createContext<BuilderContextType | null>(
+  null
+);
 
-type BuilderProviderProps = {
-  sections: Section[];
-  settings: Settings;
-};
+type BuilderProviderProps = {};
 
 export const BuilderProvider = ({
-  settings,
-  sections: init,
   children,
 }: PropsWithChildren<BuilderProviderProps>) => {
-  const [sections, setSections] = useState<Section[]>(init);
-  const [activeSection, setActiveSection] = useState<number>(sections[0].id);
+  const [activeSection, setActiveSection] = useState<number>();
 
   const memoized = useMemo(
     () => ({
-      settings,
-      sections,
       activeSection,
       setActiveSection,
     }),
-    [sections, activeSection, setActiveSection]
+    [activeSection, setActiveSection]
   );
 
   return (

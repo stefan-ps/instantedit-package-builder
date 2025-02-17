@@ -1,6 +1,5 @@
 import { Typography } from '~/components/ui/typography';
 import type {
-  Addon,
   Event,
   EventBundle,
   EventPackageSection,
@@ -10,7 +9,6 @@ import { useAppDispatch, useAppSelector } from '~/store/hooks';
 import { insertBundle, removeBundle, updateEvents } from '~/store/builder-slice';
 import { cn } from '~/lib/utils';
 import { Badge } from '~/components/ui/badge';
-import { useBuilderContext } from '~/providers/builder-provider';
 import { selectSection } from '~/store/config.selector';
 
 type Props = EventPackageSection;
@@ -21,7 +19,7 @@ export function EventConfigurator({
   metadata,
   slug,
 }: Props) {
-  const pageConfig = useBuilderContext();
+  const appConfig = useAppSelector((state) => state.app.configuration);
   const dispatch = useAppDispatch();
   const section = useAppSelector(selectSection(slug));
 
@@ -69,12 +67,12 @@ export function EventConfigurator({
           }, {} as { [id: string]: Event[] });
         });
 
-        const defaultPhotography = pageConfig.sections
+        const defaultPhotography = appConfig.sections
           .find((section) => section.slug === 'photography')
           ?.metadata.bundles.find(
             (bundle) => bundle.id === servicePackage.photographyDefaultId
           );
-        const defaultCinematography = pageConfig.sections
+        const defaultCinematography = appConfig.sections
           .find((section) => section.slug === 'cinematography')
           ?.metadata.bundles.find(
             (bundle) => bundle.id === servicePackage.cinematographyDefaultId

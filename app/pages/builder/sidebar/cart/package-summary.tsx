@@ -1,8 +1,7 @@
 import { Typography } from '~/components/ui/typography';
-import type { Bundle, ServiceBundle } from '~/types/api';
+import type { ServiceBundle } from '~/types/api';
 import { calculateBundlePrice } from '../utils';
 import { useAppSelector } from '~/store/hooks';
-import { useBuilderContext } from '~/providers/builder-provider';
 import { selectSection } from '~/store/config.selector';
 
 type Props = {
@@ -10,7 +9,7 @@ type Props = {
 };
 
 const PackageSummary = ({ item }: Props) => {
-  const { settings } = useBuilderContext();
+  const { settings } = useAppSelector((state) => state.app.configuration);
   const eventSection = useAppSelector(selectSection('event'));
 
   return (
