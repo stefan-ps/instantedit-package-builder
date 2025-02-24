@@ -48,6 +48,8 @@ const formSchema = z.object({
   }),
   venues: z.array(
     z.object({
+      eventId: z.number(),
+      eventName: z.string(),
       location: z.string(),
       slot: z.date(),
     })
@@ -84,7 +86,6 @@ const ReserveForm = () => {
       const booking: Booking = {
         contact,
         venues,
-        events: eventSection?.events ?? [],
         bundles: packages,
         addons: addons,
       };
@@ -97,7 +98,12 @@ const ReserveForm = () => {
 
   const addVenue = useCallback(() => {
     if (fields.length < (eventSection?.events.length ?? 0))
-      append({ location: '', slot: new Date() });
+      append({
+        eventId: eventSection?.events[fields.length].id!,
+        eventName: eventSection?.events[fields.length].title!,
+        location: '',
+        slot: new Date(),
+      });
   }, [eventSection, fields]);
 
   return (
@@ -165,7 +171,7 @@ const ReserveForm = () => {
               className='grid grid-cols-1 lg:grid-cols-2 gap-4'
             >
               <Typography className='lg:col-span-2 text-left font-bold'>
-                Venue {index + 1}
+                {item.eventName}
               </Typography>
               <FormField
                 control={form.control}
@@ -203,10 +209,8 @@ const ReserveForm = () => {
                           <div className='datepicker-light-mode'>
                             <DatePicker
                               selected={field.value}
-                              onChange={(value) =>
-                                field.onChange(value)
-                              }
-                              timeInputLabel='Time:'
+                              onChange={(value) => field.onChange(value)}
+                              timeInputLabel='Start time:'
                               dateFormat='MM/dd/yyyy h:mm aa'
                               showTimeInput
                               inline

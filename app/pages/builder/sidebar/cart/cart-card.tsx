@@ -59,14 +59,6 @@ const CartCard = () => {
           </div>
           <ReserveDialog />
         </div>
-        <div className='flex flex-col xl:flex-row gap-5 bg-transparent'>
-          <Button variant={'outline'} size={'lg'} className='grow'>
-            <SlCallOut color='hsl(var(--primary))' /> Book consultation
-          </Button>
-          <Button variant={'outline'} size={'lg'} className={'grow'}>
-            <SlCallOut color='hsl(var(--primary))' /> Call Us Directly
-          </Button>
-        </div>
       </div>
     </div>
   );

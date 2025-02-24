@@ -3,12 +3,12 @@ import type { Addon, Bundle, Event } from './api';
 export type Booking = {
   contact: BookingContact;
   venues: Venue[];
-  events: Event[];
   bundles: Bundle[];
   addons: Addon[];
 };
 
 export type Venue = {
+  eventId: number;
   location: string;
   slot: Date;
 };
