@@ -49,7 +49,7 @@ const formSchema = z.object({
   venues: z.array(
     z.object({
       location: z.string(),
-      date: z.number(),
+      slot: z.date(),
     })
   ),
 });
@@ -97,7 +97,7 @@ const ReserveForm = () => {
 
   const addVenue = useCallback(() => {
     if (fields.length < (eventSection?.events.length ?? 0))
-      append({ location: '', date: Date.now() });
+      append({ location: '', slot: new Date() });
   }, [eventSection, fields]);
 
   return (
@@ -182,7 +182,7 @@ const ReserveForm = () => {
               />
               <FormField
                 control={form.control}
-                name={`venues.${index}.date`}
+                name={`venues.${index}.slot`}
                 render={({ field }) => (
                   <FormItem className='flex flex-col gap-1 items-start'>
                     <FormLabel>Date & Time</FormLabel>
@@ -202,9 +202,9 @@ const ReserveForm = () => {
                         <PopoverContent align='start' className='w-auto p-0'>
                           <div className='datepicker-light-mode'>
                             <DatePicker
-                              selected={new Date(field.value)}
+                              selected={field.value}
                               onChange={(value) =>
-                                field.onChange(value?.getTime())
+                                field.onChange(value)
                               }
                               timeInputLabel='Time:'
                               dateFormat='MM/dd/yyyy h:mm aa'

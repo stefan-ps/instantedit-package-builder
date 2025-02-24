@@ -10,7 +10,7 @@ export type Booking = {
 
 export type Venue = {
   location: string;
-  date: number;
+  slot: Date;
 };
 
 export type BookingContact = {

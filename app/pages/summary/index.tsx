@@ -1,9 +1,10 @@
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useAppSelector } from '~/store/hooks';
 import ContactDetails from './contact-details';
 import { useNavigate } from 'react-router';
 import ServicesDetails from './services-details';
 import { Button } from '~/components/ui/button';
+import { makeBooking } from '~/lib/api';
 
 const Summary = () => {
   const navigate = useNavigate();
@@ -15,6 +16,10 @@ const Summary = () => {
     }
   }, []);
 
+  const onReserveHandler = useCallback(() => {
+    if (booking) makeBooking(booking);
+  }, [booking]);
+
   if (!booking) {
     return null;
   }
@@ -25,7 +30,9 @@ const Summary = () => {
         <img src='/raj_logo.svg' height={100} width={200} />
         <ContactDetails {...booking} />
         <ServicesDetails {...booking} />
-        <Button>Request Reservation</Button>
+        <Button onClick={onReserveHandler}>
+          Request Reservation
+        </Button>
       </div>
       <div className='basis-0 lg:basis-7/12 bg-blue-200 w-20'></div>
     </div>

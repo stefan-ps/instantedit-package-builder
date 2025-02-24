@@ -4,7 +4,7 @@ import type { Section, Settings } from '~/types/api';
 export const fetchAppConfiguration = createAsyncThunk(
   'app/configuration',
   async () => {
-    const product = await fetch('http://localhost:3000/api/section');
+    const product = await fetch(`${import.meta.env.VITE_API}/api/section`);
     return await product.json();
   }
 );
