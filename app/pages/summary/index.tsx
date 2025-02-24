@@ -16,8 +16,15 @@ const Summary = () => {
     }
   }, []);
 
-  const onReserveHandler = useCallback(() => {
-    if (booking) makeBooking(booking);
+  const onReserveHandler = useCallback(async () => {
+    if (booking) {
+      const response = await makeBooking(booking);
+      console.log(response.status);
+      if (response.status === 201) {
+        await navigate('/success');
+        return;
+      }
+    }
   }, [booking]);
 
   if (!booking) {
@@ -30,9 +37,7 @@ const Summary = () => {
         <img src='/raj_logo.svg' height={100} width={200} />
         <ContactDetails {...booking} />
         <ServicesDetails {...booking} />
-        <Button onClick={onReserveHandler}>
-          Request Reservation
-        </Button>
+        <Button onClick={onReserveHandler}>Request Reservation</Button>
       </div>
       <div className='basis-0 lg:basis-7/12 bg-blue-200 w-20'></div>
     </div>
