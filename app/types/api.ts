@@ -97,6 +97,7 @@ export type Service = {
   id: number;
   title: string;
   description?: string;
+  isAddon: boolean;
   price: number;
   isRecurring: boolean;
 };

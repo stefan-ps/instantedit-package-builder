@@ -19,7 +19,6 @@ const Summary = () => {
   const onReserveHandler = useCallback(async () => {
     if (booking) {
       const response = await makeBooking(booking);
-      console.log(response.status);
       if (response.status === 201) {
         await navigate('/success');
         return;

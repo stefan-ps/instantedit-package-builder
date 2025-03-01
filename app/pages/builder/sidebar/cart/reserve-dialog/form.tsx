@@ -86,6 +86,7 @@ const ReserveForm = () => {
       const booking: Booking = {
         contact,
         venues,
+        events: eventSection?.events ?? [],
         bundles: packages,
         addons: addons,
       };

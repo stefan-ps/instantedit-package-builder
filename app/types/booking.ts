@@ -5,6 +5,7 @@ export type Booking = {
   venues: Venue[];
   bundles: Bundle[];
   addons: Addon[];
+  events: Event[],
 };
 
 export type Venue = {

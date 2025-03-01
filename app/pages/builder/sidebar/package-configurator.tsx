@@ -39,7 +39,7 @@ export function PackageConfigurator({
       ...(metadata.addons.map((addon) => addon.service) ?? []),
       ...(metadata.bundles.find(
         (servicePackage) => servicePackage.id === section?.package?.id
-      )?.addons ?? []),
+      )?.addons.filter((addon) => addon.isAddon) ?? []),
     ];
   }, [section]);
 
