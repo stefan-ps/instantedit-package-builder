@@ -40,9 +40,9 @@ const ComparableContainer = ({
       <DialogTrigger asChild>
         <Button variant={'link'}>{actionText}</Button>
       </DialogTrigger>
-      <DialogContent className='max-w-5xl'>
+      <DialogContent className='max-w-5xl max-h-screen overflow-x-auto overflow-y-auto'>
         <DialogHeader>
-          <DialogTitle>Compare {title}</DialogTitle>
+          <DialogTitle className='text-left'>Compare {title}</DialogTitle>
           <div
             className='grid grid-cols-[repeat(var(--columns),_1fr)] gap-y-4 pt-5'
             style={{ '--columns': bundles.length + 1 } as React.CSSProperties}
@@ -66,7 +66,7 @@ const ComparableContainer = ({
             ))}
             {headers.current.map((header) => (
               <Fragment key={header}>
-                <div className='border-t pt-3'>
+                <div className='border-t pt-3 text-left'>
                   <Typography>{header}</Typography>
                 </div>
                 {bundles.map((bundle) => {
@@ -100,7 +100,7 @@ const ComparableContainer = ({
                 })}
               </Fragment>
             ))}
-            <div className='flex flex-col justify-center items-start border-t pt-6'>
+            <div className='flex flex-col justify-center items-start border-t pt-6 text-left'>
               <Typography appearance={'muted'}>
                 Need a lower priced option?
               </Typography>

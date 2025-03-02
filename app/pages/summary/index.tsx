@@ -31,14 +31,14 @@ const Summary = () => {
   }
 
   return (
-    <div className='h-screen flex flex-row flex-grow'>
+    <div className='h-screen md:flex flex-row flex-grow'>
       <div className='lg:basis-5/12 p-5 flex flex-col gap-10'>
         <img src='/raj_logo.svg' height={100} width={200} />
         <ContactDetails {...booking} />
         <ServicesDetails {...booking} />
         <Button onClick={onReserveHandler}>Request Reservation</Button>
       </div>
-      <div className='basis-0 lg:basis-7/12 bg-blue-200 w-20'></div>
+      <div className='basis-0 lg:basis-7/12 bg-blue-200'></div>
     </div>
   );
 };

@@ -1,12 +1,12 @@
 import { Typography } from '~/components/ui/typography';
-import type {
-  Event,
-  EventBundle,
-  EventPackageSection,
-} from '~/types/api';
+import type { Event, EventBundle, EventPackageSection } from '~/types/api';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '~/store/hooks';
-import { insertBundle, removeBundle, updateEvents } from '~/store/builder-slice';
+import {
+  insertBundle,
+  removeBundle,
+  updateEvents,
+} from '~/store/builder-slice';
 import { cn } from '~/lib/utils';
 import { Badge } from '~/components/ui/badge';
 import { selectSection } from '~/store/config.selector';
@@ -53,7 +53,7 @@ export function EventConfigurator({
       if (section?.package?.id === servicePackage.id) {
         dispatch(removeBundle({ slug: slug }));
       } else {
-        dispatch(insertBundle({ slug: slug, package: servicePackage }));
+        dispatch(insertBundle({ title, slug: slug, package: servicePackage }));
 
         setEventSelector(() => {
           return servicePackage.events.reduce((prev, curr) => {
@@ -67,21 +67,33 @@ export function EventConfigurator({
           }, {} as { [id: string]: Event[] });
         });
 
-        const defaultPhotography = appConfig.sections
-          .find((section) => section.slug === 'photography')
-          ?.metadata.bundles.find(
-            (bundle) => bundle.id === servicePackage.photographyDefaultId
-          );
-        const defaultCinematography = appConfig.sections
-          .find((section) => section.slug === 'cinematography')
-          ?.metadata.bundles.find(
+        const photographySection = appConfig.sections.find(
+          (section) => section.slug === 'photography'
+        );
+        const defaultPhotography = photographySection?.metadata.bundles.find(
+          (bundle) => bundle.id === servicePackage.photographyDefaultId
+        );
+        const cinematographySection = appConfig.sections.find(
+          (section) => section.slug === 'cinematography'
+        );
+        const defaultCinematography =
+          cinematographySection?.metadata.bundles.find(
             (bundle) => bundle.id === servicePackage.cinematographyDefaultId
           );
+
         dispatch(
-          insertBundle({ slug: 'photography', package: defaultPhotography })
+          insertBundle({
+            title: photographySection?.title ?? '',
+            slug: 'photography',
+            package: defaultPhotography,
+          })
         );
         dispatch(
-          insertBundle({ slug: 'cinematography', package: defaultCinematography })
+          insertBundle({
+            title: cinematographySection?.title ?? '',
+            slug: 'cinematography',
+            package: defaultCinematography,
+          })
         );
       }
     },

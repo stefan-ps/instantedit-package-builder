@@ -4,7 +4,10 @@ import { Typography } from '~/components/ui/typography';
 import { formatCurrency } from '~/lib/format';
 import { cn } from '~/lib/utils';
 import { insertAddon, removeAddon } from '~/store/builder-slice';
-import { selectSection } from '~/store/config.selector';
+import {
+  getSelectedSectionsLength,
+  selectSection,
+} from '~/store/config.selector';
 import { useAppSelector } from '~/store/hooks';
 import type { ExtraSection, Section, Service } from '~/types/api';
 
@@ -12,22 +15,23 @@ type Props = ExtraSection & { slug: Section['slug'] };
 
 const ExtraConfigurator = ({ title, description, slug, metadata }: Props) => {
   const section = useAppSelector(selectSection(slug));
+  const sectionsLength = useAppSelector(getSelectedSectionsLength);
   const dispatch = useDispatch();
 
   useEffect(() => {
     metadata.addons.forEach((addon) => {
-      if (addon.defaultYes) {
-        dispatch(insertAddon({ slug, addon: addon.service }));
+      if (sectionsLength && addon.defaultYes) {
+        dispatch(insertAddon({ title, slug, addon: addon.service }));
       }
     });
-  }, []);
+  }, [sectionsLength]);
 
   const onAddonClickHandler = useCallback(
     (service: Service) => {
       if (section?.addons?.find((addon) => addon.id === service.id)) {
         dispatch(removeAddon({ slug: slug, addon: service }));
       } else {
-        dispatch(insertAddon({ slug: slug, addon: service }));
+        dispatch(insertAddon({ title, slug: slug, addon: service }));
       }
     },
     [section]

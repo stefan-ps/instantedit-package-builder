@@ -1,4 +1,4 @@
-import type { Event, Bundle, Settings } from '~/types/api';
+import type { Event, Bundle, Settings, Service } from '~/types/api';
 
 export const calculateEventPrice = (events: Event[], settings: Settings) => {
   return events

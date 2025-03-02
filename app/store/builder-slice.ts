@@ -8,6 +8,7 @@ import type {
 import type { Booking } from '~/types/booking';
 
 export type ConfigSection = {
+  title?: string;
   slug: Section['slug'];
   package?: Bundle;
   addons?: Addon[];
@@ -19,6 +20,7 @@ export type BuilderSliceType = {
     Record<
       Section['slug'],
       {
+        title?: string;
         package?: Bundle;
         addons: Addon[];
         events: Event[];
@@ -40,6 +42,7 @@ export const builderSlice = createSlice({
       const sectionConfiguration = state.configs[action.payload.slug];
       if (!sectionConfiguration) {
         state.configs[action.payload.slug] = {
+          title: action.payload.title,
           package: action.payload.package,
           addons: action.payload.addons ?? [],
           events: action.payload.events ?? [],
@@ -59,6 +62,7 @@ export const builderSlice = createSlice({
         sectionConfiguration.events = action.payload.events ?? [];
       } else {
         state.configs[action.payload.slug] = {
+          title: action.payload.title,
           package: undefined,
           addons: [],
           events: action.payload.events ?? [],
@@ -67,7 +71,7 @@ export const builderSlice = createSlice({
     },
     insertAddon: (
       state,
-      action: PayloadAction<{ slug: Section['slug']; addon: Addon }>
+      action: PayloadAction<{ title: string, slug: Section['slug']; addon: Addon }>
     ) => {
       const sectionConfiguration = state.configs[action.payload.slug];
       if (sectionConfiguration) {
@@ -80,6 +84,7 @@ export const builderSlice = createSlice({
         }
       } else {
         state.configs[action.payload.slug] = {
+          title: action.payload.title,
           package: undefined,
           addons: [action.payload.addon],
           events: [],

@@ -37,9 +37,9 @@ export function PackageConfigurator({
   const addons = useMemo(() => {
     return [
       ...(metadata.addons.map((addon) => addon.service) ?? []),
-      ...(metadata.bundles.find(
-        (servicePackage) => servicePackage.id === section?.package?.id
-      )?.addons.filter((addon) => addon.isAddon) ?? []),
+      ...(metadata.bundles
+        .find((servicePackage) => servicePackage.id === section?.package?.id)
+        ?.addons.filter((addon) => addon.isAddon) ?? []),
     ];
   }, [section]);
 
@@ -85,6 +85,7 @@ export function PackageConfigurator({
       } else {
         dispatch(
           insertBundle({
+            title,
             slug: slug,
             package: servicePackage,
           })
@@ -99,7 +100,7 @@ export function PackageConfigurator({
       if (section?.addons?.find((addon) => addon.id === service.id)) {
         dispatch(removeAddon({ slug: slug, addon: service }));
       } else {
-        dispatch(insertAddon({ slug: slug, addon: service }));
+        dispatch(insertAddon({ title, slug: slug, addon: service }));
       }
     },
     [section]

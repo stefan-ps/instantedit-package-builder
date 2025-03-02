@@ -15,6 +15,7 @@ import {
 import PackageSummary from './package-summary';
 import EventSummary from './event-summary';
 import { selectSections } from '~/store/config.selector';
+import ExtraSummary from './extra-summary';
 
 const CartSummary = () => {
   const sections = useAppSelector(selectSections);
@@ -24,15 +25,15 @@ const CartSummary = () => {
       <DialogTrigger>
         <FaAngleDown color='hsl(var(--primary))' />
       </DialogTrigger>
-      <DialogContent className='max-w-3xl'>
+      <DialogContent className='max-w-3xl max-h-screen overflow-y-auto'>
         <DialogHeader>
-          <DialogTitle>Options Selected</DialogTitle>
-          <div className='flex flex-col gap-8 py-5'>
-            {Object.values(sections).map((item) => {
+          <DialogTitle className='text-left'>Options Selected</DialogTitle>
+          <div className='flex flex-col text-left gap-8 py-5'>
+            {Object.values(sections).map((item, index) => {
               if (item.package && isEventBundle(item.package)) {
                 return (
                   <EventSummary
-                    key={item.package.id}
+                    key={index}
                     item={item.package}
                     events={item.events}
                   />
@@ -41,11 +42,16 @@ const CartSummary = () => {
 
               if (item.package && isServiceBundle(item.package)) {
                 return (
-                  <PackageSummary key={item.package.id} item={item.package} />
+                  <PackageSummary
+                    key={index}
+                    item={item.package}
+                    title={item.title ?? ''}
+                    addons={item.addons}
+                  />
                 );
               }
 
-              return null;
+              return <ExtraSummary key={index} addons={item.addons} title={'Extras'} />;
             })}
           </div>
         </DialogHeader>

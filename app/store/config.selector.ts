@@ -4,6 +4,9 @@ import { createSelector } from '@reduxjs/toolkit';
 
 export const selectSections = (state: RootState) => state.builder.configs;
 
+export const getSelectedSectionsLength = (state: RootState) =>
+  Object.keys(state.builder.configs).length;
+
 export const selectSection = (slug: Section['slug']) => (state: RootState) =>
   state.builder.configs[slug];
 
