@@ -1,5 +1,4 @@
 import { useCallback, useMemo } from 'react';
-import { Button } from '~/components/ui/button';
 import { Typography } from '~/components/ui/typography';
 import { formatCurrency } from '~/lib/format';
 import { cn } from '~/lib/utils';
@@ -19,6 +18,7 @@ import type {
 import { calculateBundlePrice } from './utils';
 import ComparableContainer from './comparable/container';
 import { selectSection } from '~/store/config.selector';
+import LearnMore from './learn-more';
 
 type Props = ServicePackageSection & { slug: Section['slug'] };
 
@@ -166,14 +166,17 @@ export function PackageConfigurator({
               </li>
             ))}
           </ul>
-          <div className='flex flex-row justify-between items-center'>
-            <Typography variant={'small'} appearance={'muted'}>
-              {settings.translations?.helpText}
-            </Typography>
-            <Button variant={'link'}>
-              {settings.translations?.helpActionText}
-            </Button>
-          </div>
+          {metadata.more && (
+            <div className='flex flex-row justify-between items-center'>
+              <Typography variant={'small'} appearance={'muted'}>
+                {settings.translations?.helpText}
+              </Typography>
+              <LearnMore
+                label={settings.translations?.helpActionText ?? ''}
+                src={metadata.more}
+              />
+            </div>
+          )}
         </div>
         <div>
           {addons.length > 0 && (

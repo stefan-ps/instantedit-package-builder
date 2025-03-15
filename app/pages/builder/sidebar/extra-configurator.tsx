@@ -10,6 +10,7 @@ import {
 } from '~/store/config.selector';
 import { useAppSelector } from '~/store/hooks';
 import type { ExtraSection, Section, Service } from '~/types/api';
+import LearnMore from './learn-more';
 
 type Props = ExtraSection & { slug: Section['slug'] };
 
@@ -57,6 +58,12 @@ const ExtraConfigurator = ({ title, description, slug, metadata }: Props) => {
               <li key={element.id} className={cn('flex flex-col gap-3 py-3')}>
                 <div className='flex flex-row justify-between items-center'>
                   <Typography>{element.service.title}</Typography>
+                  {element.service.more && (
+                    <LearnMore
+                      label={'Learn More'}
+                      src={element.service.more}
+                    />
+                  )}
                 </div>
                 {element.service.description && (
                   <Typography variant={'small'} appearance={'muted'}>

@@ -26,35 +26,37 @@ const CartSummary = () => {
         <FaAngleDown color='hsl(var(--primary))' />
       </DialogTrigger>
       <DialogContent className='max-w-3xl max-h-screen overflow-y-auto'>
-        <DialogHeader>
-          <DialogTitle className='text-left'>Options Selected</DialogTitle>
-          <div className='flex flex-col text-left gap-8 py-5'>
-            {Object.values(sections).map((item, index) => {
-              if (item.package && isEventBundle(item.package)) {
-                return (
-                  <EventSummary
-                    key={index}
-                    item={item.package}
-                    events={item.events}
-                  />
-                );
-              }
+      <DialogHeader>
+        <DialogTitle className='text-left'>Options Selected</DialogTitle>
+      </DialogHeader>
+        <div className='flex flex-col text-left gap-8 py-5'>
+          {Object.values(sections).map((item, index) => {
+            if (item.package && isEventBundle(item.package)) {
+              return (
+                <EventSummary
+                  key={index}
+                  item={item.package}
+                  events={item.events}
+                />
+              );
+            }
 
-              if (item.package && isServiceBundle(item.package)) {
-                return (
-                  <PackageSummary
-                    key={index}
-                    item={item.package}
-                    title={item.title ?? ''}
-                    addons={item.addons}
-                  />
-                );
-              }
+            if (item.package && isServiceBundle(item.package)) {
+              return (
+                <PackageSummary
+                  key={index}
+                  item={item.package}
+                  title={item.title ?? ''}
+                  addons={item.addons}
+                />
+              );
+            }
 
-              return <ExtraSummary key={index} addons={item.addons} title={'Extras'} />;
-            })}
-          </div>
-        </DialogHeader>
+            return (
+              <ExtraSummary key={index} addons={item.addons} title={'Extras'} />
+            );
+          })}
+        </div>
       </DialogContent>
     </Dialog>
   );

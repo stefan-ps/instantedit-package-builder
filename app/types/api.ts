@@ -45,6 +45,7 @@ export type ServicePackageMetadata = {
   id: number;
   title?: string;
   description?: string;
+  more?: string;
   bundles: ServiceBundle[];
   addons: MetadataService[];
 };
@@ -97,6 +98,7 @@ export type Service = {
   id: number;
   title: string;
   description?: string;
+  more?: string;
   isAddon: boolean;
   price: number;
   isRecurring: boolean;
