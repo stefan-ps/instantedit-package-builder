@@ -11,10 +11,9 @@ import {
 } from '~/components/ui/form';
 import { Input } from '~/components/ui/input';
 import { Button } from '~/components/ui/button';
-import { CalendarIcon, PlusSquare } from 'lucide-react';
+import { CalendarIcon } from 'lucide-react';
 import { Typography } from '~/components/ui/typography';
-import React, { useCallback } from 'react';
-const DatePicker = React.lazy(() => import('react-datepicker'));
+import { useCallback } from 'react';
 import 'react-datepicker/dist/react-datepicker.css';
 import {
   Popover,
@@ -32,6 +31,7 @@ import {
 import { useDispatch } from 'react-redux';
 import { saveBooking } from '~/store/builder-slice';
 import { useNavigate } from 'react-router';
+import { Calendar } from '~/components/ui/calendar';
 
 const formSchema = z.object({
   firstName: z.string().min(2, {
@@ -47,12 +47,24 @@ const formSchema = z.object({
     message: 'Must be valid email.',
   }),
   venues: z.array(
-    z.object({
-      eventId: z.number(),
-      eventName: z.string(),
-      location: z.string(),
-      slot: z.date(),
-    })
+    z
+      .object({
+        eventId: z.number(),
+        eventName: z.string(),
+        location: z.string().min(2),
+        slot: z.number(),
+        slotBeginning: z.string().min(4),
+        slotEnding: z.string().min(4),
+      })
+      .refine(
+        (data) => {
+          return !(data.slotBeginning === '' || data.slotEnding === '');
+        },
+        {
+          message: 'Start and end time must be provided.',
+          path: ['slot'],
+        }
+      )
   ),
 });
 
@@ -70,22 +82,42 @@ const ReserveForm = () => {
       lastName: '',
       phone: '',
       email: '',
+      venues: eventSection?.events.map((event) => ({
+        eventId: event.id,
+        eventName: event.title,
+        location: '',
+        slot: new Date().getTime(),
+        slotBeginning: '',
+        slotEnding: '',
+      })),
     },
   });
 
   const { fields, append } = useFieldArray({
-    control: form.control, // control props comes from useForm (optional: if you are using FormProvider)
-    name: 'venues', // unique name for your Field Array
+    control: form.control,
+    name: 'venues',
   });
 
-  // 2. Define a submit handler.
   const onSubmit = useCallback(
     ({ venues, ...contact }: z.infer<typeof formSchema>) => {
-      // Do something with the form values.
-      // ✅ This will be type-safe and validated.
       const booking: Booking = {
         contact,
-        venues,
+        venues: venues.map((venue) => {
+          const slotBeginning = new Date(venue.slot);
+          slotBeginning.setHours(parseInt(venue.slotBeginning.split(':')[0]));
+          slotBeginning.setMinutes(parseInt(venue.slotBeginning.split(':')[1]));
+          slotBeginning.setSeconds(0);
+          const slotEnding = new Date(venue.slot);
+          slotEnding.setHours(parseInt(venue.slotEnding.split(':')[0]));
+          slotEnding.setMinutes(parseInt(venue.slotEnding.split(':')[1]));
+          slotEnding.setSeconds(0);
+
+          return {
+            ...venue,
+            slotBeginning: slotBeginning.getTime(),
+            slotEnding: slotEnding.getTime(),
+          };
+        }),
         events: eventSection?.events ?? [],
         bundles: packages,
         addons: addons,
@@ -96,16 +128,6 @@ const ReserveForm = () => {
     },
     [eventSection?.events, packages]
   );
-
-  const addVenue = useCallback(() => {
-    if (fields.length < (eventSection?.events.length ?? 0))
-      append({
-        eventId: eventSection?.events[fields.length].id!,
-        eventName: eventSection?.events[fields.length].title!,
-        location: '',
-        slot: new Date(),
-      });
-  }, [eventSection, fields]);
 
   return (
     <Form {...form}>
@@ -202,19 +224,53 @@ const ReserveForm = () => {
                           >
                             <CalendarIcon className='mr-2 h-4 w-4' />
                             {field.value
-                              ? format(field.value, 'PPP p')
+                              ? format(field.value, 'PPP')
                               : 'Pick date & time'}
                           </Button>
                         </PopoverTrigger>
-                        <PopoverContent align='start' className='w-auto p-0'>
-                          <div className='datepicker-light-mode'>
-                            <DatePicker
-                              selected={field.value}
-                              onChange={(value) => field.onChange(value)}
-                              timeInputLabel='Start time:'
-                              dateFormat='MM/dd/yyyy h:mm aa'
-                              showTimeInput
-                              inline
+                        <PopoverContent className='w-auto p-0 flex flex-col gap-2 pb-2'>
+                          <Calendar
+                            mode='single'
+                            selected={new Date(field.value)}
+                            onSelect={(value) => field.onChange(value?.getTime())}
+                            className='rounded-md border'
+                          />
+                          <div className='flex flex-col gap-2 items-center px-2'>
+                            <FormField
+                              control={form.control}
+                              name={`venues.${index}.slotBeginning`}
+                              render={({ field }) => (
+                                <FormItem className='flex flex-row gap-2 items-center'>
+                                  <FormLabel className='w-24'>
+                                    Start Time:
+                                  </FormLabel>
+                                  <FormControl>
+                                    <Input
+                                      {...field}
+                                      className='flex-1'
+                                      type='time'
+                                    />
+                                  </FormControl>
+                                </FormItem>
+                              )}
+                            />
+                            <FormField
+                              control={form.control}
+                              name={`venues.${index}.slotEnding`}
+                              render={({ field }) => (
+                                <FormItem className='flex flex-row gap-2 items-center'>
+                                  <FormLabel className='w-24'>
+                                    End Time:
+                                  </FormLabel>
+                                  <FormControl>
+                                    <Input
+                                      {...field}
+                                      className='flex-1'
+                                      type='time'
+                                    />
+                                  </FormControl>
+                                </FormItem>
+                              )}
                             />
                           </div>
                         </PopoverContent>
@@ -226,14 +282,6 @@ const ReserveForm = () => {
               />
             </div>
           ))}
-          {fields.length < (eventSection?.events.length ?? 0) && (
-            <div>
-              <Button type='button' variant={'link'} onClick={addVenue}>
-                <PlusSquare size={24} />
-                <Typography>Add location</Typography>
-              </Button>
-            </div>
-          )}
         </div>
         <div className='flex justify-center items-center'>
           <Button type='submit'>Confirm</Button>

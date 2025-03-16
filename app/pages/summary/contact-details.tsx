@@ -1,10 +1,11 @@
+import { format } from 'date-fns';
 import React from 'react';
 import { Typography } from '~/components/ui/typography';
 import type { Booking } from '~/types/booking';
 
 type Props = Booking;
 
-const ContactDetails = ({ contact, venues }: Props) => {
+const ContactDetails = ({ contact, venues, events }: Props) => {
   return (
     <div className='flex flex-col gap-5'>
       <div className='bg-gray-300 p-3'>
@@ -28,8 +29,17 @@ const ContactDetails = ({ contact, venues }: Props) => {
       </div>
       {venues.map((venue, index) => (
         <div key={index} className='flex flex-row gap-3'>
-          <Typography appearance={'muted'}>Location {++index}</Typography>
-          <Typography className='grow text-right'>{venue.location}</Typography>
+          <Typography appearance={'muted'}>
+            {events.find((event) => event.id === venue.eventId)?.title}
+          </Typography>
+          <div key={index} className='flex-1 flex flex-col direction-reverse'>
+            <Typography className='grow text-right'>
+              {venue.location}
+            </Typography>
+            <Typography className='grow text-right'>
+              {format(new Date(venue.slot), 'PPP')}
+            </Typography>
+          </div>
         </div>
       ))}
     </div>

@@ -1,9 +1,9 @@
 import { configureStore } from '@reduxjs/toolkit';
 import BuilderReducer from './builder-slice';
-import appReducer from './app.slice';
+import AppReducer from './app.slice';
 
 export const store = configureStore({
-  reducer: { builder: BuilderReducer, app: appReducer },
+  reducer: { builder: BuilderReducer, app: AppReducer },
 });
 
 // Infer the `RootState`,  `AppDispatch`, and `AppStore` types from the store itself

@@ -21,7 +21,6 @@ const LearnMore = ({ src, label }: Props) => {
     fetch(src).then(async (data) => {
       const text = await data.text();
       setContent(text);
-      console.log(text);
     });
   }, []);
 
