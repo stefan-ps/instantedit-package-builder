@@ -14,7 +14,6 @@ import { Button } from '~/components/ui/button';
 import { CalendarIcon } from 'lucide-react';
 import { Typography } from '~/components/ui/typography';
 import { useCallback } from 'react';
-import 'react-datepicker/dist/react-datepicker.css';
 import {
   Popover,
   PopoverContent,
