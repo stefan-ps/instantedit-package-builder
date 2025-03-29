@@ -31,6 +31,7 @@ import { useDispatch } from 'react-redux';
 import { saveBooking } from '~/store/builder-slice';
 import { useNavigate } from 'react-router';
 import { Calendar } from '~/components/ui/calendar';
+import GooglePlacesAutocomplete from '~/components/google-places-autocomplete-select/google-places-autocomplete';
 
 const formSchema = z.object({
   firstName: z.string().min(2, {
@@ -195,6 +196,26 @@ const ReserveForm = () => {
               <Typography className='lg:col-span-2 text-left font-bold'>
                 {item.eventName}
               </Typography>
+              {/* <FormField
+                control={form.control}
+                name={`venues.${index}.location`}
+                render={({ field }) => (
+                  <FormItem className='flex flex-col gap-1 items-start'>
+                    <FormLabel>Location</FormLabel>
+                    <FormControl>
+                      <GooglePlacesAutocomplete
+                        apiKey={import.meta.env.VITE_PLACES_API_KEY}
+                        value={field.value}
+                        onSelect={(value) => {
+                          field.onChange(value);
+                        }}
+                      />
+                      <Input placeholder='Venue Address' {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              /> */}
               <FormField
                 control={form.control}
                 name={`venues.${index}.location`}
@@ -202,7 +223,16 @@ const ReserveForm = () => {
                   <FormItem className='flex flex-col gap-1 items-start'>
                     <FormLabel>Location</FormLabel>
                     <FormControl>
-                      <Input placeholder='Venue Address' {...field} />
+                      <GooglePlacesAutocomplete
+                        apiKey={import.meta.env.VITE_PLACES_API_KEY}
+                        value={field.value}
+                        onSelect={(value) => {
+                          field.onChange(value);
+                        }}
+                        debounce={1000}
+                        minLengthAutocomplete={3}
+                      />
+                      {/* <Input placeholder='Venue Address' {...field} /> */}
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -231,7 +261,9 @@ const ReserveForm = () => {
                           <Calendar
                             mode='single'
                             selected={new Date(field.value)}
-                            onSelect={(value) => field.onChange(value?.getTime())}
+                            onSelect={(value) =>
+                              field.onChange(value?.getTime())
+                            }
                             className='rounded-md border'
                           />
                           <div className='flex flex-col gap-2 items-center px-2'>

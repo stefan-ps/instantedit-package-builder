@@ -20,7 +20,6 @@ const ReserveDialog = () => {
       </DialogTrigger>
       <DialogContent
         className='max-w-3xl max-h-screen overflow-y-auto'
-        onInteractOutside={(e) => e.preventDefault()}
       >
         <DialogHeader>
           <DialogTitle>Contact Details</DialogTitle>

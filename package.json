@@ -9,18 +9,22 @@
     "typecheck": "react-router typegen && tsc"
   },
   "dependencies": {
+    "@googlemaps/js-api-loader": "^1.16.8",
     "@hookform/resolvers": "^4.0.0",
     "@radix-ui/react-accordion": "^1.2.3",
-    "@radix-ui/react-dialog": "^1.1.4",
+    "@radix-ui/react-dialog": "^1.1.6",
     "@radix-ui/react-label": "^2.1.2",
     "@radix-ui/react-popover": "^1.1.6",
+    "@radix-ui/react-select": "^2.1.6",
     "@radix-ui/react-separator": "^1.1.2",
     "@radix-ui/react-slot": "^1.1.2",
     "@react-router/node": "^7.0.2",
     "@react-router/serve": "^7.0.2",
     "@reduxjs/toolkit": "^2.5.0",
+    "@types/google.maps": "^3.58.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "cmdk": "^1.1.1",
     "date-fns": "^4.1.0",
     "isbot": "^5.1.17",
     "lucide-react": "^0.468.0",
@@ -35,6 +39,7 @@
     "rehype-raw": "^7.0.0",
     "tailwind-merge": "^2.5.5",
     "tailwindcss-animate": "^1.0.7",
+    "use-debounce": "^10.0.4",
     "zod": "^3.24.2"
   },
   "devDependencies": {

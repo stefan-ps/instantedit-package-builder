@@ -1,5 +1,4 @@
 import { format } from 'date-fns';
-import React from 'react';
 import { Typography } from '~/components/ui/typography';
 import type { Booking } from '~/types/booking';
 
@@ -28,12 +27,15 @@ const ContactDetails = ({ contact, venues, events }: Props) => {
         <Typography className='grow text-right'>{contact.phone}</Typography>
       </div>
       {venues.map((venue, index) => (
-        <div key={index} className='flex flex-row gap-3'>
+        <div key={index} className='flex flex-row gap-3 justify-between'>
           <Typography appearance={'muted'}>
             {events.find((event) => event.id === venue.eventId)?.title}
           </Typography>
-          <div key={index} className='flex-1 flex flex-col direction-reverse'>
-            <Typography className='grow text-right'>
+          <div key={index} className='flex-1 flex flex-col w-96'>
+            <Typography
+              className='text-right whitespace-nowrap overflow-hidden text-ellipsis'
+              title={venue.location}
+            >
               {venue.location}
             </Typography>
             <Typography className='grow text-right'>
