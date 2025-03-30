@@ -38,7 +38,7 @@ export default function HomeV2Page() {
 
     return (
       <BuilderProvider>
-        <div className='flex flex-col lg:flex-row-reverse relative overflow-hidden'>
+        <div className='flex flex-col lg:flex-row-reverse overflow-hidden'>
           <div className='z-10 w-full h-64 lg:h-screen lg:w-[calc(100vw-460px)] fixed top-0 left-0 flex'>
             <VideoPreviewV2 />
           </div>

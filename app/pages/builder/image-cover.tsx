@@ -1,21 +1,41 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useBuilderContext } from '~/providers/builder-provider';
 import { useAppDispatch, useAppSelector } from '~/store/hooks';
 import ReactPlayer from 'react-player/vimeo';
 import { setReady } from '~/store/app.slice';
 
-const ImageCover = () => {
+const ImageCover = ({
+  onVideoContainerHeight,
+}: {
+  onVideoContainerHeight: (height: number) => void;
+}) => {
   const sections = useAppSelector((state) => state.app.configuration.sections);
   const dispatch = useAppDispatch();
   const { activeSection } = useBuilderContext();
+  const videoContainerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new ResizeObserver((entries) => {
+      for (let entry of entries) {
+        onVideoContainerHeight(
+          videoContainerRef.current?.getBoundingClientRect().height ?? 0
+        );
+      }
+    });
+
+    if (videoContainerRef.current) {
+      observer.observe(videoContainerRef.current);
+    }
+
+    return () => observer.disconnect();
+  });
 
   return (
-    // <img
-    //   src={sections.find((section) => section.id === activeSection)?.coverUrl}
-    //   className='h-full w-full object-cover'
-    // />
-      <div className=' w-full flex justify-center items-center'>
-        <div className='w-full aspect-video'>
+    <div className='w-full flex justify-center items-center'>
+      <div
+        ref={videoContainerRef}
+        className='w-full aspect-video'
+      >
         <ReactPlayer
           url={'https://player.vimeo.com/video/1066701989'}
           playing
@@ -33,38 +53,12 @@ const ImageCover = () => {
             backgroundColor: 'transparent',
           }}
           onPlay={() => {
-            dispatch(setReady(true))
+            dispatch(setReady(true));
           }}
         />
-        </div>
       </div>
+    </div>
   );
 };
 
-export default ImageCover;
-
-{/* <div className='flex-1 w-full h-[100vh] overflow-hidden relative flex justify-center items-center'>
-  <ReactPlayer
-    // url={'https://player.vimeo.com/video/1066701989'}
-    url={'https://player.vimeo.com/video/1066699071'}
-    playing
-    loop
-    stopOnUnmount
-    width={'100%'}
-    height={'100%'}
-    config={{
-      playerOptions: {
-        colors: ['000000', '00ADEF', 'FFFFFF', '000000'],
-        responsive: true,
-      },
-    }}
-    style={{
-      backgroundColor: 'transparent',
-      // position: 'absolute',
-      // top: '25%',
-      top: 0,
-      left: '-50%',
-      bottom: 0,
-    }}
-  />
-</div> */}
+export default React.memo(ImageCover);
