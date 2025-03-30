@@ -1,4 +1,8 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import {
+  createAsyncThunk,
+  createSlice,
+  type PayloadAction,
+} from '@reduxjs/toolkit';
 import type { Section, Settings } from '~/types/api';
 
 export const fetchAppConfiguration = createAsyncThunk(
@@ -15,19 +19,25 @@ type AppState = {
     settings: Settings;
   };
   loading: boolean;
+  ready: boolean;
   error: string | null;
 };
 
 const initialState: AppState = {
   configuration: null!,
   loading: false,
+  ready: false,
   error: null,
 };
 
 const appSlice = createSlice({
   name: 'app',
   initialState,
-  reducers: {},
+  reducers: {
+    setReady: (state, action: PayloadAction<boolean>) => {
+      state.ready = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(fetchAppConfiguration.pending, (state) => {
       state.loading = true;
@@ -42,5 +52,7 @@ const appSlice = createSlice({
     });
   },
 });
+
+export const { setReady } = appSlice.actions;
 
 export default appSlice.reducer;

@@ -6,6 +6,9 @@ import { useEffect, useMemo } from 'react';
 import { fetchAppConfiguration } from '~/store/app.slice';
 import { cn } from '~/lib/utils';
 import { Loader } from 'lucide-react';
+import ImageCover from '~/pages/builder/image-cover';
+import { Sidebar } from '~/pages/builder/sidebar';
+import VideoPreviewV2 from '~/pages/builder/video-preview-v2';
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -14,7 +17,7 @@ export function meta({}: Route.MetaArgs) {
   ];
 }
 
-export default function HomePage() {
+export default function HomeV2Page() {
   const dispatch = useAppDispatch();
   const { configuration, loading, error, ready } = useAppSelector(
     (state) => state.app
@@ -35,7 +38,14 @@ export default function HomePage() {
 
     return (
       <BuilderProvider>
-        <Builder />
+        <div className='flex flex-col lg:flex-row-reverse relative overflow-hidden'>
+          <div className='z-10 w-full h-64 lg:h-screen lg:w-[calc(100vw-460px)] fixed top-0 left-0 flex'>
+            <VideoPreviewV2 />
+          </div>
+          <div className={'pt-64 lg:pt-0 lg:w-[450px]'}>
+            <Sidebar />
+          </div>
+        </div>
       </BuilderProvider>
     );
   }, [loading, error, configuration]);

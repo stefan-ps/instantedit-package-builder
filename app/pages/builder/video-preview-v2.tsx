@@ -1,21 +1,25 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useBuilderContext } from '~/providers/builder-provider';
 import { useAppDispatch, useAppSelector } from '~/store/hooks';
 import ReactPlayer from 'react-player/vimeo';
 import { setReady } from '~/store/app.slice';
 
-const ImageCover = () => {
+const VideoPreviewV2 = () => {
   const sections = useAppSelector((state) => state.app.configuration.sections);
   const dispatch = useAppDispatch();
   const { activeSection } = useBuilderContext();
+  const videoContainerRef = useRef<HTMLDivElement>(null);
+  const [containerWidth, setContainerWidth] = useState(0);
+
+  useEffect(() => {
+    setContainerWidth(
+      videoContainerRef.current?.getBoundingClientRect().width ?? 0
+    );
+  }, []);
 
   return (
-    // <img
-    //   src={sections.find((section) => section.id === activeSection)?.coverUrl}
-    //   className='h-full w-full object-cover'
-    // />
-      <div className=' w-full flex justify-center items-center'>
-        <div className='w-full aspect-video'>
+    <div className='flex-1 lg:h-[100vh] overflow-hidden relative flex items-center justify-center'>
+      <div ref={videoContainerRef} className='w-full lg:w-auto lg:h-screen aspect-video'>
         <ReactPlayer
           url={'https://player.vimeo.com/video/1066701989'}
           playing
@@ -26,24 +30,26 @@ const ImageCover = () => {
           config={{
             playerOptions: {
               colors: ['000000', '00ADEF', 'FFFFFF', '000000'],
-              responsive: true,
+            //   responsive: true,
             },
           }}
           style={{
             backgroundColor: 'transparent',
+            position: 'relative',
           }}
           onPlay={() => {
-            dispatch(setReady(true))
+            dispatch(setReady(true));
           }}
         />
-        </div>
       </div>
+    </div>
   );
 };
 
-export default ImageCover;
+export default VideoPreviewV2;
 
-{/* <div className='flex-1 w-full h-[100vh] overflow-hidden relative flex justify-center items-center'>
+{
+  /* <div className='flex-1 w-full h-[100vh] overflow-hidden relative flex justify-center items-center'>
   <ReactPlayer
     // url={'https://player.vimeo.com/video/1066701989'}
     url={'https://player.vimeo.com/video/1066699071'}
@@ -67,4 +73,5 @@ export default ImageCover;
       bottom: 0,
     }}
   />
-</div> */}
+</div> */
+}

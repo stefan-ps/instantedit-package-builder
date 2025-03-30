@@ -9,7 +9,7 @@ export function Sidebar() {
 
   return (
     <div className='relative'>
-      <div className='flex flex-row justify-between items-center bg-white p-5'>
+      <div className='flex flex-row justify-between items-center bg-white p-5 '>
         <Typography variant={'h2'}>Welcome!</Typography>
         <Button>
           <Typography>Save progress</Typography>
@@ -19,7 +19,7 @@ export function Sidebar() {
       {sections.map((section) => {
         return <Section key={section.id} {...section} />;
       })}
-      <div className='h-96'></div>
+      <div className='h-48'></div>
       <CartCard />
     </div>
   );

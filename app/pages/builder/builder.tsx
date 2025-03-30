@@ -14,14 +14,14 @@ export function Builder() {
   }, []);
 
   return (
-    <div className='h-screen flex flex-col lg:flex-row-reverse relative'>
+    <div className='flex flex-col lg:flex-row-reverse overflow-hidden'>
       <div
         ref={coverRef}
-        className='z-10 lg:basis-4/6 h-64 lg:h-screen w-full lg:w-4/6 fixed top-0 left-0'
+        className='z-10 h-64 lg:h-screen w-full lg:w-[calc(100vw-460px)] fixed top-0 left-0 flex'
       >
         <ImageCover />
       </div>
-      <div className={'relative top-64 lg:top-0 lg:basis-2/6'}>
+      <div className={'pt-64 lg:pt-0 lg:w-[450px]'}>
         <Sidebar />
       </div>
     </div>
