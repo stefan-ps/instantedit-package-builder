@@ -196,26 +196,6 @@ const ReserveForm = () => {
               <Typography className='lg:col-span-2 text-left font-bold'>
                 {item.eventName}
               </Typography>
-              {/* <FormField
-                control={form.control}
-                name={`venues.${index}.location`}
-                render={({ field }) => (
-                  <FormItem className='flex flex-col gap-1 items-start'>
-                    <FormLabel>Location</FormLabel>
-                    <FormControl>
-                      <GooglePlacesAutocomplete
-                        apiKey={import.meta.env.VITE_PLACES_API_KEY}
-                        value={field.value}
-                        onSelect={(value) => {
-                          field.onChange(value);
-                        }}
-                      />
-                      <Input placeholder='Venue Address' {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              /> */}
               <FormField
                 control={form.control}
                 name={`venues.${index}.location`}

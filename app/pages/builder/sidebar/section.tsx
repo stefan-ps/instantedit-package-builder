@@ -43,7 +43,7 @@ export function Section({ id, slug }: Props) {
   }
 
   return (
-    <div className='px-5 pb-10 pt-20' ref={elementRef}>
+    <div className='px-5 pb-5 lg:pb-10 pt-10 lg:pt-20' ref={elementRef}>
       {section.type === 'event' && <EventConfigurator {...section} />}
       {section.type === 'service' && <PackageConfigurator {...section} />}
       {section.type === 'extra' && <ExtraConfigurator {...section} />}
