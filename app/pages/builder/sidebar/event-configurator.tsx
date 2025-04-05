@@ -10,6 +10,7 @@ import {
 import { cn } from '~/lib/utils';
 import { Badge } from '~/components/ui/badge';
 import { selectSection } from '~/store/config.selector';
+import { setActivePreview } from '~/store/app.slice';
 
 type Props = EventPackageSection;
 
@@ -54,6 +55,9 @@ export function EventConfigurator({
         dispatch(removeBundle({ slug: slug }));
       } else {
         dispatch(insertBundle({ title, slug: slug, package: servicePackage }));
+        if (servicePackage.preview) {
+          dispatch(setActivePreview(servicePackage.preview));
+        }
 
         setEventSelector(() => {
           return servicePackage.events.reduce((prev, curr) => {

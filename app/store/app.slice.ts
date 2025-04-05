@@ -21,6 +21,7 @@ type AppState = {
   loading: boolean;
   ready: boolean;
   error: string | null;
+  activePreview?: string;
 };
 
 const initialState: AppState = {
@@ -37,15 +38,28 @@ const appSlice = createSlice({
     setReady: (state, action: PayloadAction<boolean>) => {
       state.ready = action.payload;
     },
+    setActivePreview: (state, action: PayloadAction<string>) => {
+      state.activePreview = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchAppConfiguration.pending, (state) => {
       state.loading = true;
     });
-    builder.addCase(fetchAppConfiguration.fulfilled, (state, action) => {
-      state.configuration = action.payload;
-      state.loading = false;
-    });
+    builder.addCase(
+      fetchAppConfiguration.fulfilled,
+      (
+        state,
+        action: PayloadAction<{
+          sections: Section[];
+          settings: Settings;
+        }>
+      ) => {
+        state.configuration = action.payload;
+        state.activePreview = action.payload.sections[0].coverUrl;
+        state.loading = false;
+      }
+    );
     builder.addCase(fetchAppConfiguration.rejected, (state, action) => {
       state.error = action.error.message || 'Something went wrong';
       state.loading = false;
@@ -53,6 +67,6 @@ const appSlice = createSlice({
   },
 });
 
-export const { setReady } = appSlice.actions;
+export const { setReady, setActivePreview } = appSlice.actions;
 
 export default appSlice.reducer;

@@ -68,7 +68,6 @@ const GooglePlacesAutocomplete: React.ForwardRefRenderFunction<
         if (options.length > 0) {
           setPredictions(options);
         }
-        console.log(e.target.value);
         setLoading(false);
       });
     },

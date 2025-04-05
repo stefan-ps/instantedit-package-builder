@@ -70,6 +70,7 @@ export type Bundle = {
   id: number;
   title: string;
   description?: string;
+  preview?: string;
   type: 'service' | 'event';
   price: number;
   isRecurring: boolean;

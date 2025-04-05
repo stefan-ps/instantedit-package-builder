@@ -13,7 +13,7 @@ export function Builder() {
       </div>
       <div
         style={isLg ? {} : { paddingTop: `${containerWidth}px` }}
-        className={'lg:pt-0 lg:w-[460px]'}
+        className={'lg:pt-0 lg:w-[450px]'}
       >
         <Sidebar />
       </div>

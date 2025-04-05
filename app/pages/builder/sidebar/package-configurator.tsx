@@ -19,6 +19,7 @@ import { calculateBundlePrice } from './utils';
 import ComparableContainer from './comparable/container';
 import { selectSection } from '~/store/config.selector';
 import LearnMore from './learn-more';
+import { setActivePreview } from '~/store/app.slice';
 
 type Props = ServicePackageSection & { slug: Section['slug'] };
 
@@ -83,6 +84,9 @@ export function PackageConfigurator({
       if (section?.package?.id === servicePackage.id) {
         dispatch(removeBundle({ slug: slug }));
       } else {
+        if (servicePackage.preview) {
+          dispatch(setActivePreview(servicePackage.preview));
+        }
         dispatch(
           insertBundle({
             title,

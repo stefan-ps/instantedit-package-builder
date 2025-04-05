@@ -1,5 +1,4 @@
-import { useEffect, useRef } from 'react';
-import { useBuilderContext } from '~/providers/builder-provider';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '~/store/hooks';
 import ReactPlayer from 'react-player/vimeo';
 import { setReady } from '~/store/app.slice';
@@ -9,9 +8,11 @@ const VideoPreview = ({
 }: {
   onVideoContainerHeight: (height: number) => void;
 }) => {
-  const sections = useAppSelector((state) => state.app.configuration.sections);
+  const preview = useAppSelector((state) => state.app.activePreview);
   const dispatch = useAppDispatch();
-  const { activeSection } = useBuilderContext();
+
+  const [previews, setPreviews] = useState<string[]>([]);
+
   const videoContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -23,29 +24,39 @@ const VideoPreview = ({
       }
     });
 
-    if (videoContainerRef.current) {
+    if (videoContainerRef.current && previews.length === 1) {
       observer.observe(videoContainerRef.current);
     }
 
     return () => observer.disconnect();
-  }, []);
+  }, [previews]);
 
-  return (
-    <div className='flex-1 w-full aspect-video lg:h-[100vh] lg:overflow-hidden flex items-center justify-center'>
-      <div
-        ref={videoContainerRef}
-        className='w-full lg:w-auto lg:h-screen aspect-video'
-      >
+  useEffect(() => {
+    if (preview) {
+      setPreviews((prev) => {
+        if (prev.includes(preview)) {
+          return prev;
+        }
+        return [...prev, preview];
+      });
+    }
+  }, [preview]);
+
+  const previewVideos = useMemo(
+    () =>
+      previews.map((p, index) => (
         <ReactPlayer
-          url={'https://player.vimeo.com/video/1066701989'}
+          key={p}
+          url={p}
           playing
           loop
           stopOnUnmount
           width={'100%'}
-          height={'100%'}
+          height={index === 0 ? '100%' : 0}
           config={{
             playerOptions: {
-              colors: ['000000', '00ADEF', 'FFFFFF', '000000'],
+              transparent: true,
+              colors: ['000000', '00ADEF', 'FFFFFF', 'FFFFFF'],
               //   responsive: true,
             },
           }}
@@ -55,39 +66,30 @@ const VideoPreview = ({
           }}
           onPlay={() => {
             dispatch(setReady(true));
+
+            if (index === previews.length - 1) {
+              setPreviews((prev) => prev.slice(-1));
+            }
           }}
         />
+      )),
+    [previews]
+  );
+
+  return (
+    <div
+      className={
+        'flex-1 w-full aspect-video lg:h-[100vh] lg:overflow-hidden flex items-center justify-center'
+      }
+    >
+      <div
+        ref={videoContainerRef}
+        className='w-full lg:w-auto lg:h-screen aspect-video bg-transparent'
+      >
+        {previewVideos}
       </div>
     </div>
   );
 };
 
 export default VideoPreview;
-
-{
-  /* <div className='flex-1 w-full h-[100vh] overflow-hidden relative flex justify-center items-center'>
-  <ReactPlayer
-    // url={'https://player.vimeo.com/video/1066701989'}
-    url={'https://player.vimeo.com/video/1066699071'}
-    playing
-    loop
-    stopOnUnmount
-    width={'100%'}
-    height={'100%'}
-    config={{
-      playerOptions: {
-        colors: ['000000', '00ADEF', 'FFFFFF', '000000'],
-        responsive: true,
-      },
-    }}
-    style={{
-      backgroundColor: 'transparent',
-      // position: 'absolute',
-      // top: '25%',
-      top: 0,
-      left: '-50%',
-      bottom: 0,
-    }}
-  />
-</div> */
-}
