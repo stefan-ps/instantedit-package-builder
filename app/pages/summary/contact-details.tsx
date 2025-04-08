@@ -7,7 +7,7 @@ type Props = Booking;
 const ContactDetails = ({ contact, venues, events }: Props) => {
   return (
     <div className='flex flex-col gap-5'>
-      <div className='bg-gray-300 p-3'>
+      <div className='bg-gray-200 p-3'>
         <Typography variant={'h4'}>Contact Details</Typography>
       </div>
       <div className='flex flex-row gap-3'>

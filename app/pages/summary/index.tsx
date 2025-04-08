@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router';
 import ServicesDetails from './services-details';
 import { Button } from '~/components/ui/button';
 import { makeBooking } from '~/lib/api';
+import Total from './total';
 
 const Summary = () => {
   const navigate = useNavigate();
@@ -36,6 +37,7 @@ const Summary = () => {
         <img src='/raj_logo.svg' height={100} width={200} />
         <ContactDetails {...booking} />
         <ServicesDetails {...booking} />
+        <Total {...booking} />
         <Button onClick={onReserveHandler}>Request Reservation</Button>
       </div>
       <div className='basis-0 lg:basis-7/12 bg-blue-200'></div>
