@@ -11,6 +11,7 @@ import {
 import { useAppSelector } from '~/store/hooks';
 import type { ExtraSection, Section, Service } from '~/types/api';
 import LearnMore from './learn-more';
+import { useSearchParams } from 'react-router';
 
 type Props = ExtraSection & { slug: Section['slug'] };
 
@@ -18,13 +19,16 @@ const ExtraConfigurator = ({ title, description, slug, metadata }: Props) => {
   const section = useAppSelector(selectSection(slug));
   const sectionsLength = useAppSelector(getSelectedSectionsLength);
   const dispatch = useDispatch();
+  const [searchParams] = useSearchParams();
 
   useEffect(() => {
-    metadata.addons.forEach((addon) => {
-      if (sectionsLength && addon.defaultYes) {
-        dispatch(insertAddon({ title, slug, addon: addon.service }));
-      }
-    });
+    if (searchParams.size === 0) {
+      metadata.addons.forEach((addon) => {
+        if (sectionsLength && addon.defaultYes) {
+          dispatch(insertAddon({ title, slug, addon: addon.service }));
+        }
+      });
+    }
   }, [sectionsLength]);
 
   const onAddonClickHandler = useCallback(

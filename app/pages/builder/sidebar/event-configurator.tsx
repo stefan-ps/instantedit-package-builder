@@ -11,6 +11,7 @@ import { cn } from '~/lib/utils';
 import { Badge } from '~/components/ui/badge';
 import { selectSection } from '~/store/config.selector';
 import { setActivePreview } from '~/store/app.slice';
+import { useSearchParams } from 'react-router';
 
 type Props = EventPackageSection;
 
@@ -51,6 +52,7 @@ export function EventConfigurator({
 
   const onPackageClickHandler = useCallback(
     (servicePackage: EventBundle) => {
+      console.log('onpackageclick')
       if (section?.package?.id === servicePackage.id) {
         dispatch(removeBundle({ slug: slug }));
       } else {
@@ -106,6 +108,7 @@ export function EventConfigurator({
 
   const onEventClickHandler = useCallback(
     (event: Event, isSelected: boolean) => {
+      console.log('oneventclick')
       if (event.type === 'ceremony') {
         if (isSelected) {
           if (eventSelector[event.type].length > 1) {
@@ -260,6 +263,32 @@ export function EventConfigurator({
       );
     }
   }, [eventSelector]);
+  
+  const [searchParams] = useSearchParams();
+  useEffect(() => {
+    const events = searchParams.getAll('events');
+
+    const allEvents = metadata?.bundles.map((b) => b.events).flat();
+    const uniqueEvents = Array.from(
+      new Map(allEvents.map((event) => [event.id, event])).values()
+    );
+
+    const relevantEvents = uniqueEvents.filter((event) =>
+      events.includes(`${event.id}`)
+    );
+
+    setEventSelector(() => {
+      return relevantEvents.reduce((prev, curr) => {
+        if (prev[curr.type]) {
+          prev[curr.type] = [...prev[curr.type], curr];
+        } else {
+          prev[curr.type] = [curr];
+        }
+
+        return prev;
+      }, {} as { [id: string]: Event[] });
+    });
+  }, []);
 
   return (
     <>
