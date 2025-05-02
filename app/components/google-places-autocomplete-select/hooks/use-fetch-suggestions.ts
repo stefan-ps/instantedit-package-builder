@@ -28,7 +28,12 @@ const useFetchSuggestions = (
 
       const { suggestions } =
         await google.maps.places.AutocompleteSuggestion.fetchAutocompleteSuggestions(
-          { ...autocompletionRequest, input: value, sessionToken: sessionToken }
+          {
+            ...autocompletionRequest,
+            input: value,
+            sessionToken: sessionToken,
+            includedRegionCodes: ['us'],
+          }
         );
 
       cb(

@@ -1,24 +1,26 @@
 import type { Addon, Bundle, Event } from './api';
 
 export type Booking = {
+  id?: number;
+  status?: 'contact' | 'venue' | 'requested' | 'confirmed' | 'cancelled';
   contact: BookingContact;
-  venues: Venue[];
+  venues?: Venue[];
   bundles: Bundle[];
   addons: Addon[];
-  events: Event[],
+  events: Event[];
 };
 
 export type Venue = {
   eventId: number;
-  location: string;
+  location?: string;
   slot: number;
   slotBeginning: number;
   slotEnding: number;
 };
 
 export type BookingContact = {
-  firstName: string;
-  lastName: string;
-  phone: string;
   email: string;
+  firstName?: string;
+  lastName?: string;
+  phone?: string;
 };

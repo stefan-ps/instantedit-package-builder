@@ -32,6 +32,7 @@ import { saveBooking } from '~/store/builder-slice';
 import { useNavigate } from 'react-router';
 import { Calendar } from '~/components/ui/calendar';
 import GooglePlacesAutocomplete from '~/components/google-places-autocomplete-select/google-places-autocomplete';
+import { makeBooking } from '~/lib/api';
 
 const formSchema = z.object({
   firstName: z.string().min(2, {
@@ -47,24 +48,23 @@ const formSchema = z.object({
     message: 'Must be valid email.',
   }),
   venues: z.array(
-    z
-      .object({
-        eventId: z.number(),
-        eventName: z.string(),
-        location: z.string().min(2),
-        slot: z.number(),
-        slotBeginning: z.string().min(4),
-        slotEnding: z.string().min(4),
-      })
-      .refine(
-        (data) => {
-          return !(data.slotBeginning === '' || data.slotEnding === '');
-        },
-        {
-          message: 'Start and end time must be provided.',
-          path: ['slot'],
-        }
-      )
+    z.object({
+      eventId: z.number(),
+      eventName: z.string(),
+      location: z.string().optional(),
+      slot: z.number(),
+      slotBeginning: z.string().optional(),
+      slotEnding: z.string().optional(),
+    })
+    // .refine(
+    //   (data) => {
+    //     return !(data.slotBeginning === '' || data.slotEnding === '');
+    //   },
+    //   {
+    //     message: 'Start and end time must be provided.',
+    //     path: ['slot'],
+    //   }
+    // )
   ),
 });
 
@@ -99,18 +99,24 @@ const ReserveForm = () => {
   });
 
   const onSubmit = useCallback(
-    ({ venues, ...contact }: z.infer<typeof formSchema>) => {
+    async ({ venues, ...contact }: z.infer<typeof formSchema>) => {
       const booking: Booking = {
         contact,
         venues: venues.map((venue) => {
           const slotBeginning = new Date(venue.slot);
-          slotBeginning.setHours(parseInt(venue.slotBeginning.split(':')[0]));
-          slotBeginning.setMinutes(parseInt(venue.slotBeginning.split(':')[1]));
-          slotBeginning.setSeconds(0);
+          if (venue.slotBeginning && venue.slotBeginning !== '') {
+            slotBeginning.setHours(parseInt(venue.slotBeginning.split(':')[0]));
+            slotBeginning.setMinutes(
+              parseInt(venue.slotBeginning.split(':')[1])
+            );
+            slotBeginning.setSeconds(0);
+          }
           const slotEnding = new Date(venue.slot);
-          slotEnding.setHours(parseInt(venue.slotEnding.split(':')[0]));
-          slotEnding.setMinutes(parseInt(venue.slotEnding.split(':')[1]));
-          slotEnding.setSeconds(0);
+          if (venue.slotEnding && venue.slotEnding !== '') {
+            slotEnding.setHours(parseInt(venue.slotEnding.split(':')[0]));
+            slotEnding.setMinutes(parseInt(venue.slotEnding.split(':')[1]));
+            slotEnding.setSeconds(0);
+          }
 
           return {
             ...venue,
@@ -123,8 +129,12 @@ const ReserveForm = () => {
         addons: addons,
       };
 
-      dispatch(saveBooking(booking));
-      navigate('/summary');
+      const response = await makeBooking(booking);
+      if (response.status === 201) {
+        const { id } = await response.json();
+        dispatch(saveBooking({id, ...booking}));
+        await navigate('/summary');
+      }
     },
     [eventSection?.events, packages]
   );
@@ -205,14 +215,13 @@ const ReserveForm = () => {
                     <FormControl>
                       <GooglePlacesAutocomplete
                         apiKey={import.meta.env.VITE_PLACES_API_KEY}
-                        value={field.value}
+                        value={field.value ?? ''}
                         onSelect={(value) => {
                           field.onChange(value);
                         }}
                         debounce={1000}
                         minLengthAutocomplete={3}
                       />
-                      {/* <Input placeholder='Venue Address' {...field} /> */}
                     </FormControl>
                     <FormMessage />
                   </FormItem>

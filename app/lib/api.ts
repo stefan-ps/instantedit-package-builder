@@ -16,3 +16,13 @@ export const makeBooking = async (booking: Booking) => {
     body: JSON.stringify(booking),
   });
 };
+
+export const requestBooking = async (booking: Pick<Booking, 'id' | 'status'>) => {
+  return await fetch(`${API_HOST}/booking`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(booking),
+  });
+};

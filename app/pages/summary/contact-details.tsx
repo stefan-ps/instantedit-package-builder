@@ -26,7 +26,7 @@ const ContactDetails = ({ contact, venues, events }: Props) => {
         <Typography appearance={'muted'}>Phone</Typography>
         <Typography className='grow text-right'>{contact.phone}</Typography>
       </div>
-      {venues.map((venue, index) => (
+      {venues?.map((venue, index) => (
         <div key={index} className='flex flex-row gap-3 justify-between'>
           <Typography appearance={'muted'}>
             {events.find((event) => event.id === venue.eventId)?.title}
