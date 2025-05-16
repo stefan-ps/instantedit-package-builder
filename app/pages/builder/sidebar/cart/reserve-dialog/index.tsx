@@ -8,7 +8,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '~/components/ui/dialog';
-import ReserveForm from './form';
+import Stepper from './booking-stepper/stepper';
 
 const ReserveDialog = () => {
   return (
@@ -18,18 +18,9 @@ const ReserveDialog = () => {
           Reserve Now
         </Button>
       </DialogTrigger>
-      <DialogContent
-        className='max-w-3xl max-h-screen overflow-y-auto'
-      >
+      <DialogContent className='max-w-3xl max-h-screen overflow-y-auto'>
         <DialogHeader>
-          <DialogTitle>Contact Details</DialogTitle>
-          <DialogDescription>
-            Provide us with your contact information and event location details
-            below.
-          </DialogDescription>
-          <div>
-            <ReserveForm />
-          </div>
+          <Stepper />
         </DialogHeader>
       </DialogContent>
     </Dialog>

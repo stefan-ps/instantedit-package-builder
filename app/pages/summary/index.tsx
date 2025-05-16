@@ -4,7 +4,7 @@ import ContactDetails from './contact-details';
 import { useNavigate } from 'react-router';
 import ServicesDetails from './services-details';
 import { Button } from '~/components/ui/button';
-import { requestBooking } from '~/lib/api';
+import { patchBooking } from '~/lib/api';
 import Total from './total';
 
 const Summary = () => {
@@ -19,7 +19,7 @@ const Summary = () => {
 
   const onReserveHandler = useCallback(async () => {
     if (booking) {
-      const response = await requestBooking({
+      const response = await patchBooking({
         id: booking.id,
         status: 'requested'
       });

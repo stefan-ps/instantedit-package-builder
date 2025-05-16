@@ -17,7 +17,7 @@ export const makeBooking = async (booking: Booking) => {
   });
 };
 
-export const requestBooking = async (booking: Pick<Booking, 'id' | 'status'>) => {
+export const patchBooking = async (booking: Partial<Booking>) => {
   return await fetch(`${API_HOST}/booking`, {
     method: 'PATCH',
     headers: {
@@ -26,3 +26,14 @@ export const requestBooking = async (booking: Pick<Booking, 'id' | 'status'>) =>
     body: JSON.stringify(booking),
   });
 };
+
+export const putBooking = async (booking: Partial<Booking>) => {
+  return await fetch(`${API_HOST}/booking`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(booking),
+  });
+};
+
