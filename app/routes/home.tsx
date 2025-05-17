@@ -40,14 +40,20 @@ export default function HomePage() {
     );
   }, [loading, error, configuration]);
 
+  if (loading || error || !configuration) {
+    return null;
+  }
+
   return (
     <div
       className={cn('relative h-[100vh] overflow-hidden', {
         'overflow-auto h-auto': ready,
       })}
     >
-      {page}
-      <div
+      <BuilderProvider>
+        <Builder />
+      </BuilderProvider>
+      {/* <div
         className={cn(
           'justify-center items-center absolute top-0 bottom-0 left-0 right-0 z-10 bg-background',
           'flex flex-col gap-10',
@@ -58,7 +64,7 @@ export default function HomePage() {
       >
         <img src='/logo-big.png' />
         <Loader className='h-10 w-10 animate-[spin_2s_linear_infinite]' />
-      </div>
+      </div> */}
     </div>
   );
 }
