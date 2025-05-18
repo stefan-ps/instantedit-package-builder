@@ -13,7 +13,7 @@ import { Provider } from 'react-redux';
 import { persistor, store } from './store/store';
 import { cn } from './lib/utils';
 import { Loader } from 'lucide-react';
-import { PersistGate } from 'redux-persist/integration/react';
+import { PersistGate } from 'redux-persist/lib/integration/react';
 
 export const links: Route.LinksFunction = () => [
   { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
