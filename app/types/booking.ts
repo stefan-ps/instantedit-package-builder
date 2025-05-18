@@ -19,6 +19,7 @@ export type Venue = {
 };
 
 export type BookingContact = {
+  id?: number;
   email: string;
   firstName?: string;
   lastName?: string;

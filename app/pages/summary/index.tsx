@@ -1,14 +1,16 @@
 import React, { useCallback, useEffect } from 'react';
-import { useAppSelector } from '~/store/hooks';
+import { useAppDispatch, useAppSelector } from '~/store/hooks';
 import ContactDetails from './contact-details';
 import { useNavigate } from 'react-router';
 import ServicesDetails from './services-details';
 import { Button } from '~/components/ui/button';
 import { patchBooking } from '~/lib/api';
 import Total from './total';
+import { resetConfig } from '~/store/builder-slice';
 
 const Summary = () => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const booking = useAppSelector((state) => state.builder.booking);
 
   useEffect(() => {
@@ -24,6 +26,7 @@ const Summary = () => {
         status: 'requested'
       });
       if (response.status === 200) {
+        dispatch(resetConfig());
         await navigate('/success');
         return;
       }

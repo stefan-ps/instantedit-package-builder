@@ -1,10 +1,5 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import type {
-  Addon,
-  Event,
-  Section,
-  Bundle,
-} from '~/types/api';
+import type { Addon, Event, Section, Bundle } from '~/types/api';
 import type { Booking } from '~/types/booking';
 
 export type ConfigSection = {
@@ -71,7 +66,11 @@ export const builderSlice = createSlice({
     },
     insertAddon: (
       state,
-      action: PayloadAction<{ title: string, slug: Section['slug']; addon: Addon }>
+      action: PayloadAction<{
+        title: string;
+        slug: Section['slug'];
+        addon: Addon;
+      }>
     ) => {
       const sectionConfiguration = state.configs[action.payload.slug];
       if (sectionConfiguration) {
@@ -106,6 +105,11 @@ export const builderSlice = createSlice({
     saveBooking: (state, action: PayloadAction<Booking>) => {
       state.booking = action.payload;
     },
+
+    resetConfig: (state) => {
+      state.configs = {}
+      state.booking = undefined;
+    },
   },
 });
 
@@ -117,6 +121,7 @@ export const {
   insertAddon,
   removeAddon,
   saveBooking,
+  resetConfig,
 } = builderSlice.actions;
 
 export default builderSlice.reducer;

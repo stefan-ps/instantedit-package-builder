@@ -5,7 +5,7 @@ import CartCard from './cart/cart-card';
 import { useAppDispatch, useAppSelector } from '~/store/hooks';
 import { useEffect } from 'react';
 import { useSearchParams } from 'react-router';
-import { insertAddon, insertBundle } from '~/store/builder-slice';
+import { insertAddon, insertBundle, resetConfig } from '~/store/builder-slice';
 import { setActivePreview } from '~/store/app.slice';
 
 export function Sidebar() {

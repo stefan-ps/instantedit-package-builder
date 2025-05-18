@@ -40,6 +40,7 @@ const ContactStep = ({ next }: { next: () => void }) => {
   const packages = useAppSelector(selectServiceBundles);
   const addons = useAppSelector(selectAddons);
   const dispatch = useAppDispatch();
+  const booking = useAppSelector((state) => state.builder.booking);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -53,21 +54,21 @@ const ContactStep = ({ next }: { next: () => void }) => {
 
   const onSubmitHandler = async (data: z.infer<typeof formSchema>) => {
     const response = await makeBooking({
+      id: booking?.id,
       status: 'contact',
-      contact: data,
+      contact: { id: booking?.contact.id, ...data },
       events: eventSection?.events ?? [],
       bundles: packages,
       addons: addons,
     });
 
     if (response.status === 201) {
-      const { id } = await response.json();
-
+      const createdBooking = await response.json();
       dispatch(
         saveBooking({
-          id,
+          id: createdBooking?.id,
           status: 'contact',
-          contact: data,
+          contact: { id: createdBooking?.contact.id, ...data },
           events: eventSection?.events ?? [],
           bundles: packages,
           addons: addons,

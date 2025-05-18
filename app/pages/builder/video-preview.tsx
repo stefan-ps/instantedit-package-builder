@@ -5,8 +5,10 @@ import { setReady } from '~/store/app.slice';
 
 const VideoPreview = ({
   onVideoContainerHeight,
+  onReadyHandler,
 }: {
   onVideoContainerHeight: (height: number) => void;
+  onReadyHandler: () => void;
 }) => {
   const preview = useAppSelector((state) => state.app.activePreview);
   const dispatch = useAppDispatch();
@@ -66,6 +68,7 @@ const VideoPreview = ({
           }}
           onPlay={() => {
             dispatch(setReady(true));
+            onReadyHandler();
 
             if (index === previews.length - 1) {
               setPreviews((prev) => prev.slice(-1));
