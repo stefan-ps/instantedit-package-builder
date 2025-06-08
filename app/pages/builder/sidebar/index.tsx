@@ -56,17 +56,6 @@ export function Sidebar() {
                   package: bundle,
                 })
               );
-              // bundle.addons
-              //   .filter((addon) => addons.includes(`${addon.id}`))
-              //   .forEach((addon) => {
-              //     dispatch(
-              //       insertAddon({
-              //         title: section.title,
-              //         slug: section.slug,
-              //         addon,
-              //       })
-              //     );
-              //   });
             }
           });
 
@@ -111,13 +100,6 @@ export function Sidebar() {
 
   return (
     <div className='relative'>
-      <div className='flex flex-row justify-between items-center bg-white p-5 '>
-        <Typography variant={'h2'}>Welcome!</Typography>
-        <Button>
-          <Typography>Save progress</Typography>
-        </Button>
-      </div>
-
       {sections.map((section) => {
         return <Section key={section.id} {...section} />;
       })}

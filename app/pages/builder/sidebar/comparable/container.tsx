@@ -64,12 +64,12 @@ const ComparableContainer = ({
                 </Typography>
               </div>
             ))}
-            {headers.current.map((header) => (
-              <Fragment key={header}>
+            {headers.current.map((header, index) => (
+              <div key={index}>
                 <div className='border-t pt-3 text-left'>
                   <Typography>{header}</Typography>
                 </div>
-                {bundles.map((bundle) => {
+                {bundles.map((bundle, idx) => {
                   const comp = bundle.comparables.find(
                     (comp) => comp.title === header
                   );
@@ -77,7 +77,7 @@ const ComparableContainer = ({
                   if (comp?.icon) {
                     return (
                       <div
-                        key={comp?.title}
+                        key={idx}
                         className='flex justify-center items-center border-t pt-3'
                       >
                         <img
@@ -91,14 +91,14 @@ const ComparableContainer = ({
 
                   return (
                     <div
-                      key={comp?.title}
+                      key={idx}
                       className='flex justify-center items-center border-t pt-3'
                     >
                       <Typography>{comp?.text}</Typography>
                     </div>
                   );
                 })}
-              </Fragment>
+              </div>
             ))}
             <div className='flex flex-col justify-center items-start border-t pt-6 text-left'>
               <Typography appearance={'muted'}>
