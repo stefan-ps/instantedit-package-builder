@@ -18,7 +18,7 @@ type Props = {
   bundles: ServiceBundle[];
   events: Event[];
   settings: Settings;
-  onSelect: (servicePackage: Bundle) => void;
+  onSelect: (servicePackage: ServiceBundle) => void;
 };
 
 const ComparableContainer = ({

@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Sidebar } from './sidebar';
 import VideoPreview from './video-preview';
-import { useAppSelector } from '~/store/hooks';
 import { cn } from '~/lib/utils';
 import { Loader } from 'lucide-react';
 

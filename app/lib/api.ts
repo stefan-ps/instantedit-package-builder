@@ -7,7 +7,8 @@ export const getApp = async () => {
   return await product.json();
 };
 
-export const makeBooking = async (booking: Booking) => {
+export const makeBooking = async (booking: Booking & { sectionMetadataBundleId: number }) => {
+  console.log(booking)
   return await fetch(`${API_HOST}/booking`, {
     method: 'POST',
     headers: {

@@ -52,8 +52,7 @@ export function EventConfigurator({
 
   const onPackageClickHandler = useCallback(
     (servicePackage: EventBundle) => {
-      console.log('onpackageclick')
-      if (section?.package?.id === servicePackage.id) {
+      if (section?.bundle?.id === servicePackage.id) {
         dispatch(removeBundle({ slug: slug }));
       } else {
         dispatch(insertBundle({ title, slug: slug, package: servicePackage }));
@@ -108,7 +107,6 @@ export function EventConfigurator({
 
   const onEventClickHandler = useCallback(
     (event: Event, isSelected: boolean) => {
-      console.log('oneventclick')
       if (event.type === 'ceremony') {
         if (isSelected) {
           if (eventSelector[event.type].length > 1) {
@@ -311,7 +309,7 @@ export function EventConfigurator({
                   'flex flex-col gap-3 border-2 rounded bg-white px-4 py-3 hover:bg-primary/10 hover:border-primary/10',
                   {
                     'border-primary text-primary bg-primary/20':
-                      section?.package?.id === element.id,
+                      section?.bundle?.id === element.id,
                   }
                 )}
                 onClick={() => onPackageClickHandler(element)}

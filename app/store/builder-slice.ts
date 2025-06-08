@@ -1,11 +1,11 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import type { Addon, Event, Section, Bundle } from '~/types/api';
+import type { Addon, Event, Section, EventBundle, ServiceBundle } from '~/types/api';
 import type { Booking } from '~/types/booking';
 
-export type ConfigSection = {
+export type ActionPayload = {
   title?: string;
   slug: Section['slug'];
-  package?: Bundle;
+  package?: EventBundle | ServiceBundle;
   addons?: Addon[];
   events?: Event[];
 };
@@ -16,7 +16,7 @@ export type BuilderSliceType = {
       Section['slug'],
       {
         title?: string;
-        package?: Bundle;
+        bundle?: EventBundle | ServiceBundle;
         addons: Addon[];
         events: Event[];
       }
@@ -33,17 +33,17 @@ export const builderSlice = createSlice({
   name: 'builder',
   initialState,
   reducers: {
-    insertBundle: (state, action: PayloadAction<ConfigSection>) => {
+    insertBundle: (state, action: PayloadAction<ActionPayload>) => {
       const sectionConfiguration = state.configs[action.payload.slug];
       if (!sectionConfiguration) {
         state.configs[action.payload.slug] = {
           title: action.payload.title,
-          package: action.payload.package,
+          bundle: action.payload.package,
           addons: action.payload.addons ?? [],
           events: action.payload.events ?? [],
         };
       } else {
-        sectionConfiguration.package = action.payload.package;
+        sectionConfiguration.bundle = action.payload.package;
         sectionConfiguration.addons = action.payload.addons ?? [];
         sectionConfiguration.events = action.payload.events ?? [];
       }
@@ -51,14 +51,14 @@ export const builderSlice = createSlice({
     removeBundle: (state, action: PayloadAction<{ slug: Section['slug'] }>) => {
       delete state.configs[action.payload.slug];
     },
-    updateEvents: (state, action: PayloadAction<ConfigSection>) => {
+    updateEvents: (state, action: PayloadAction<ActionPayload>) => {
       const sectionConfiguration = state.configs[action.payload.slug];
       if (sectionConfiguration) {
         sectionConfiguration.events = action.payload.events ?? [];
       } else {
         state.configs[action.payload.slug] = {
           title: action.payload.title,
-          package: undefined,
+          bundle: undefined,
           addons: [],
           events: action.payload.events ?? [],
         };
@@ -84,7 +84,7 @@ export const builderSlice = createSlice({
       } else {
         state.configs[action.payload.slug] = {
           title: action.payload.title,
-          package: undefined,
+          bundle: undefined,
           addons: [action.payload.addon],
           events: [],
         };

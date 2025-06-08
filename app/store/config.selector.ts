@@ -14,8 +14,8 @@ export const selectServiceBundles = createSelector(
   selectSections,
   (sections) =>
     Object.values(sections)
-      .filter((section) => section.package?.type === 'service')
-      .map((section) => section.package!) ?? []
+      .filter((section) => section.bundle?.type === 'service')
+      .map((section) => section.bundle!) ?? []
 );
 
 export const selectAddons = createSelector(

@@ -128,8 +128,7 @@ const ReserveForm = () => {
         bundles: packages,
         addons: addons,
       };
-
-      const response = await makeBooking(booking);
+      const response = await makeBooking({...booking, sectionMetadataBundleId: eventSection!.bundle!.sectionMetadataBundleId});
       if (response.status === 201) {
         const { id } = await response.json();
         dispatch(saveBooking({id, ...booking}));

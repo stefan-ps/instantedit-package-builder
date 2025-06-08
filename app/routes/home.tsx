@@ -20,9 +20,9 @@ export default function HomePage() {
   );
 
   useEffect(() => {
-    if (!configuration) {
+    // if (!configuration) {
       dispatch(fetchAppConfiguration());
-    }
+    // }
   }, [dispatch]);
 
 

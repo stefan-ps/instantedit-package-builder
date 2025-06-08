@@ -60,6 +60,7 @@ const ContactStep = ({ next }: { next: () => void }) => {
       events: eventSection?.events ?? [],
       bundles: packages,
       addons: addons,
+      sectionMetadataBundleId: eventSection!.bundle!.sectionMetadataBundleId,
     });
 
     if (response.status === 201) {

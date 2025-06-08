@@ -1,6 +1,12 @@
 import { Typography } from '~/components/ui/typography';
-import type { Addon, ServiceBundle } from '~/types/api';
-import { calculateBundlePrice } from '../utils';
+import type {
+  Addon,
+  Bundle,
+  EventBundle,
+  Service,
+  ServiceBundle,
+} from '~/types/api';
+import { calculateBundlePrice, calculateServiceDiscount } from '../utils';
 import { useAppSelector } from '~/store/hooks';
 import { selectSection } from '~/store/config.selector';
 
@@ -13,6 +19,7 @@ type Props = {
 const PackageSummary = ({ item, title, addons }: Props) => {
   const { settings } = useAppSelector((state) => state.app.configuration);
   const eventSection = useAppSelector(selectSection('event'));
+  const eventBundle = eventSection?.bundle as EventBundle | undefined;
 
   return (
     <div key={item.id}>
@@ -28,7 +35,24 @@ const PackageSummary = ({ item, title, addons }: Props) => {
             style: 'currency',
             currency: 'USD',
           }).format(
-            calculateBundlePrice(item, eventSection?.events ?? [], settings)
+            calculateBundlePrice(
+              {
+                price:
+                  item.price -
+                  calculateServiceDiscount({
+                    price: item.price,
+                    discount:
+                      eventBundle?.photographyDefaultId === item.id
+                        ? eventBundle?.photographyDefaultDiscount
+                        : eventBundle?.cinematographyDefaultId === item.id
+                        ? eventBundle?.cinematographyDefaultDiscount
+                        : 0,
+                    discountType: 'fixed',
+                  } as Service),
+              } as Bundle,
+              eventSection?.events ?? [],
+              settings
+            )
           )}
         </Typography>
       </div>

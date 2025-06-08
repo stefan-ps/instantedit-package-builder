@@ -74,12 +74,17 @@ export type Bundle = {
   type: 'service' | 'event';
   price: number;
   isRecurring: boolean;
+  sectionMetadataBundleId: number;
 };
 
 export type EventBundle = Bundle & {
   type: 'event';
   photographyDefaultId?: number;
+  photographyDefaultDiscount?: string;
+  photographyDefaultDiscountType?: 'percentage' | 'fixed';
   cinematographyDefaultId?: number;
+  cinematographyDefaultDiscount?: string;
+  cinematographyDefaultDiscountType?: 'percentage' | 'fixed';
   duration: number;
   events: Event[];
 };
@@ -103,6 +108,8 @@ export type Service = {
   isAddon: boolean;
   price: number;
   isRecurring: boolean;
+  discount: number;
+  discountType: 'percentage' | 'fixed';
 };
 
 export type Addon = Service;

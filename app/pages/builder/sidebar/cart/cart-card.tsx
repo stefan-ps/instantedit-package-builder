@@ -3,30 +3,50 @@ import { Button } from '~/components/ui/button';
 import { Typography } from '~/components/ui/typography';
 import CartSummary from './cart-summary';
 import { useAppSelector } from '~/store/hooks';
-import { isServicePackage } from '~/types/api';
+import {
+  isServicePackage,
+  type Bundle,
+  type EventBundle,
+  type Service,
+} from '~/types/api';
 import { useMemo } from 'react';
-import { calculateBundlePrice } from '../utils';
+import { calculateBundlePrice, calculateServiceDiscount } from '../utils';
 import ReserveDialog from './reserve-dialog';
-import { selectSections } from '~/store/config.selector';
+import { selectSection, selectSections } from '~/store/config.selector';
 
 const CartCard = () => {
   const { settings } = useAppSelector((state) => state.app.configuration);
   const sections = useAppSelector(selectSections);
+  const eventSection = useAppSelector(selectSection('event'));
+  const eventBundle = eventSection?.bundle as EventBundle | undefined;
 
   const calculatedTotal = useMemo(
     () =>
       Object.values(sections).reduce((acc, curr, _, array) => {
         let total = acc;
-        if (curr.package && isServicePackage(curr.package)) {
+        if (curr.bundle && isServicePackage(curr.bundle)) {
           total += calculateBundlePrice(
-            curr.package,
+            {
+              price:
+                curr.bundle.price -
+                calculateServiceDiscount({
+                  price: curr.bundle.price,
+                  discount:
+                    eventBundle?.photographyDefaultId === curr.bundle.id
+                      ? eventBundle?.photographyDefaultDiscount
+                      : eventBundle?.cinematographyDefaultId === curr.bundle.id
+                      ? eventBundle?.cinematographyDefaultDiscount
+                      : 0,
+                  discountType: 'fixed',
+                } as Service),
+            } as Bundle,
             sections.event?.events ?? [],
             settings
           );
         }
 
         curr.addons.forEach((addon) => {
-          total += addon.price;
+          total += addon.price - calculateServiceDiscount(addon);
         });
         return total;
       }, 0),

@@ -14,12 +14,14 @@ import type {
   Service,
   Bundle,
   ServicePackageSection,
+  ServiceBundle,
 } from '~/types/api';
-import { calculateBundlePrice } from './utils';
+import { calculateBundlePrice, calculateServiceDiscount } from './utils';
 import ComparableContainer from './comparable/container';
 import { selectSection } from '~/store/config.selector';
 import LearnMore from './learn-more';
 import { setActivePreview } from '~/store/app.slice';
+import PackageItem from './package-item';
 
 type Props = ServicePackageSection & { slug: Section['slug'] };
 
@@ -29,7 +31,9 @@ export function PackageConfigurator({
   slug,
   metadata,
 }: Props) {
-  const { settings } = useAppSelector((state) => state.app.configuration);
+  const { settings } = useAppSelector(
+    (state) => state.app.configuration
+  );
   const section = useAppSelector(selectSection(slug));
   const eventSection = useAppSelector(selectSection('event'));
 
@@ -39,7 +43,7 @@ export function PackageConfigurator({
     return [
       ...(metadata.addons.map((addon) => addon.service) ?? []),
       ...(metadata.bundles
-        .find((servicePackage) => servicePackage.id === section?.package?.id)
+        .find((servicePackage) => servicePackage.id === section?.bundle?.id)
         ?.addons.filter((addon) => addon.isAddon) ?? []),
     ];
   }, [section]);
@@ -59,19 +63,34 @@ export function PackageConfigurator({
             )}
             onClick={() => onAddonClickHandler(element)}
           >
-            <div className='flex flex-row justify-between items-center'>
-              <Typography>{element.title}</Typography>
-              {element.price && (
-                <Typography variant={'small'} appearance={'muted'}>
-                  {formatCurrency(element.price)}
-                </Typography>
-              )}
+            <div className='flex flex-row justify-between items-start'>
+              <div>
+                <Typography>{element.title}</Typography>
+                {element.description && (
+                  <Typography variant={'small'} appearance={'muted'}>
+                    {element.description}
+                  </Typography>
+                )}
+              </div>
+              <div>
+                {element.discount && element.discount !== 0 ? (
+                  <Typography variant={'small'} appearance={'muted'}>
+                    {formatCurrency(
+                      element.price - calculateServiceDiscount(element)
+                    )}
+                  </Typography>
+                ) : null}
+                {element.price && (
+                  <Typography
+                    variant={'small'}
+                    appearance={'muted'}
+                    className={!!element.discount ? 'line-through' : ''}
+                  >
+                    {formatCurrency(element.price)}
+                  </Typography>
+                )}
+              </div>
             </div>
-            {element.description && (
-              <Typography variant={'small'} appearance={'muted'}>
-                {element.description}
-              </Typography>
-            )}
           </li>
         ))}
       </ul>
@@ -80,8 +99,8 @@ export function PackageConfigurator({
   );
 
   const onPackageClickHandler = useCallback(
-    (servicePackage: Bundle) => {
-      if (section?.package?.id === servicePackage.id) {
+    (servicePackage: ServiceBundle) => {
+      if (section?.bundle?.id === servicePackage.id) {
         dispatch(removeBundle({ slug: slug }));
       } else {
         if (servicePackage.preview) {
@@ -137,37 +156,12 @@ export function PackageConfigurator({
           )}
           <ul className={cn('flex flex-col gap-2')}>
             {metadata.bundles.map((element) => (
-              <li
+              <PackageItem
                 key={element.id}
-                className={cn(
-                  'flex flex-col gap-3 border-2 rounded bg-white px-4 py-3 hover:bg-primary/10 hover:border-primary/10',
-                  {
-                    'border-primary text-primary bg-primary/20':
-                      section?.package?.id === element.id,
-                  }
-                )}
-                onClick={() => onPackageClickHandler(element)}
-              >
-                <div className='flex flex-row justify-between items-center'>
-                  <Typography>{element.title}</Typography>
-                  {element.price && (
-                    <Typography variant={'small'} appearance={'muted'}>
-                      {formatCurrency(
-                        calculateBundlePrice(
-                          element,
-                          eventSection?.events ?? [],
-                          settings
-                        )
-                      )}
-                    </Typography>
-                  )}
-                </div>
-                {element.description && (
-                  <Typography variant={'small'} appearance={'muted'}>
-                    {element.description}
-                  </Typography>
-                )}
-              </li>
+                element={element}
+                slug={slug}
+                onPackageClickHandler={onPackageClickHandler}
+              />
             ))}
           </ul>
           {metadata.more && (

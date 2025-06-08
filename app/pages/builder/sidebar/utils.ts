@@ -19,3 +19,13 @@ export const calculateBundlePrice = (
 ) => {
   return bundle.price + calculateEventPrice(events, settings);
 };
+
+
+export const calculateServiceDiscount = (service: Service) => {
+  if (service.discountType === 'percentage') {
+    return service.price * (service.discount / 100);
+  } else if (service.discountType === 'fixed') {
+    return service.discount;
+  }
+  return 0;
+}

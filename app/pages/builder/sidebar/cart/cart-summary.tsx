@@ -31,21 +31,21 @@ const CartSummary = () => {
       </DialogHeader>
         <div className='flex flex-col text-left gap-8 py-5'>
           {Object.values(sections).map((item, index) => {
-            if (item.package && isEventBundle(item.package)) {
+            if (item.bundle && isEventBundle(item.bundle)) {
               return (
                 <EventSummary
                   key={index}
-                  item={item.package}
+                  item={item.bundle}
                   events={item.events}
                 />
               );
             }
 
-            if (item.package && isServiceBundle(item.package)) {
+            if (item.bundle && isServiceBundle(item.bundle)) {
               return (
                 <PackageSummary
                   key={index}
-                  item={item.package}
+                  item={item.bundle}
                   title={item.title ?? ''}
                   addons={item.addons}
                 />
