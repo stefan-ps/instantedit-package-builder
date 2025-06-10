@@ -52,7 +52,8 @@ const VideoPreview = ({
           url={p}
           playing
           loop
-          stopOnUnmount
+          stopOnUnmount 
+          controls={false}
           width={'100%'}
           height={index === 0 ? '100%' : 0}
           config={{
