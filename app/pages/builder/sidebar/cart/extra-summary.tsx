@@ -11,7 +11,7 @@ const ExtraSummary = ({ title, addons }: Props) => {
   return (
     <div>
       {addons.map((addon) => (
-        <div className='flex flex-row justify-between items-end gap-5 border-b my-3'>
+        <div key={addon.id} className='flex flex-row justify-between items-end gap-5 border-b my-3'>
           <div>
             <Typography variant={'small'} appearance={'muted'}>
               {title}

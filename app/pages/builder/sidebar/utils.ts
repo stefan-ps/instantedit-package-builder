@@ -22,9 +22,9 @@ export const calculateBundlePrice = (
 
 
 export const calculateServiceDiscount = (service: Service) => {
-  if (service.discountType === 'percentage') {
+  if (service.discountType === 'percentage' && service.discount) {
     return service.price * (service.discount / 100);
-  } else if (service.discountType === 'fixed') {
+  } else if (service.discountType === 'fixed' && service.discount) {
     return service.discount;
   }
   return 0;
