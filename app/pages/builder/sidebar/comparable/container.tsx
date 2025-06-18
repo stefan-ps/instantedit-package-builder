@@ -65,7 +65,7 @@ const ComparableContainer = ({
               </div>
             ))}
             {headers.current.map((header, index) => (
-              <div key={index}>
+              <Fragment key={index}>
                 <div className='border-t pt-3 text-left'>
                   <Typography>{header}</Typography>
                 </div>
@@ -98,7 +98,7 @@ const ComparableContainer = ({
                     </div>
                   );
                 })}
-              </div>
+              </Fragment>
             ))}
             <div className='flex flex-col justify-center items-start border-t pt-6 text-left'>
               <Typography appearance={'muted'}>

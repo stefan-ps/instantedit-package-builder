@@ -60,7 +60,7 @@ const VideoPreview = ({
             playerOptions: {
               transparent: true,
               colors: ['000000', '00ADEF', 'FFFFFF', 'FFFFFF'],
-              initial_quality: '4k',
+              initial_quality: '1080p',
             },
           }}
           style={{
