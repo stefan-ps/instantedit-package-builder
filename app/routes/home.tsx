@@ -4,7 +4,6 @@ import { BuilderProvider } from '~/providers/builder-provider';
 import { useAppDispatch, useAppSelector } from '~/store/hooks';
 import { useEffect } from 'react';
 import { fetchAppConfiguration } from '~/store/app.slice';
-import { cn } from '~/lib/utils';
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -15,14 +14,12 @@ export function meta({}: Route.MetaArgs) {
 
 export default function HomePage() {
   const dispatch = useAppDispatch();
-  const { configuration, loading, error, ready } = useAppSelector(
+  const { configuration, loading, error } = useAppSelector(
     (state) => state.app
   );
 
   useEffect(() => {
-    // if (!configuration) {
       dispatch(fetchAppConfiguration());
-    // }
   }, [dispatch]);
 
 
@@ -32,9 +29,7 @@ export default function HomePage() {
 
   return (
     <div
-      className={cn('relative h-[100vh] overflow-hidden', {
-        'overflow-auto h-auto': ready,
-      })}
+      className={'relative overflow-auto h-auto'}
     >
       <BuilderProvider>
         <Builder />
