@@ -47,35 +47,6 @@ const VideoPreview = ({
   const previewVideos = useMemo(
     () =>
       previews.map((p, index) => (
-        // <ReactPlayer
-        //   key={p}
-        //   url={p}
-        //   playing
-        //   loop
-        //   stopOnUnmount
-        //   controls={false}
-        //   width={'100%'}
-        //   height={index === 0 ? '100%' : 0}
-        //   config={{
-        //     playerOptions: {
-        //       transparent: true,
-        //       colors: ['000000', '00ADEF', 'FFFFFF', 'FFFFFF'],
-        //       initial_quality: '1080p',
-        //     },
-        //   }}
-        //   style={{
-        //     backgroundColor: 'transparent',
-        //     position: 'relative',
-        //   }}
-        //   onPlay={() => {
-        //     dispatch(setReady(true));
-        //     onReadyHandler();
-
-        //     if (index === previews.length - 1) {
-        //       setPreviews((prev) => prev.slice(-1));
-        //     }
-        //   }}
-        // />
         <video
           autoPlay
           loop
@@ -91,7 +62,7 @@ const VideoPreview = ({
           }}
         />
       )),
-    [previews]
+    [previews, dispatch, setReady, setPreviews, onReadyHandler]
   );
 
   return (
