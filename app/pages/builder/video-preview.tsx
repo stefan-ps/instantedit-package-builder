@@ -50,6 +50,8 @@ const VideoPreview = ({
         <video
           autoPlay
           loop
+          muted
+          playsInline
           src={p}
           width={'100%'}
           onPlay={() => {
