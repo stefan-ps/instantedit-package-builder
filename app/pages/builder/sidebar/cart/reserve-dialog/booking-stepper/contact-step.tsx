@@ -1,4 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useTransition } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { Button } from '~/components/ui/button';
@@ -41,6 +42,7 @@ const ContactStep = ({ next }: { next: () => void }) => {
   const addons = useAppSelector(selectAddons);
   const dispatch = useAppDispatch();
   const booking = useAppSelector((state) => state.builder.booking);
+  const [isPending, startTransition] = useTransition();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -53,30 +55,32 @@ const ContactStep = ({ next }: { next: () => void }) => {
   });
 
   const onSubmitHandler = async (data: z.infer<typeof formSchema>) => {
-    const response = await makeBooking({
-      id: booking?.id,
-      status: 'contact',
-      contact: { id: booking?.contact.id, ...data },
-      events: eventSection?.events ?? [],
-      bundles: packages,
-      addons: addons,
-      sectionMetadataBundleId: eventSection!.bundle!.sectionMetadataBundleId,
-    });
+    startTransition(async () => {
+      const response = await makeBooking({
+        id: booking?.id,
+        status: 'contact',
+        contact: { id: booking?.contact.id, ...data },
+        events: eventSection?.events ?? [],
+        bundles: packages,
+        addons: addons,
+        sectionMetadataBundleId: eventSection!.bundle!.sectionMetadataBundleId,
+      });
 
-    if (response.status === 201) {
-      const createdBooking = await response.json();
-      dispatch(
-        saveBooking({
-          id: createdBooking?.id,
-          status: 'contact',
-          contact: { id: createdBooking?.contact.id, ...data },
-          events: eventSection?.events ?? [],
-          bundles: packages,
-          addons: addons,
-        })
-      );
-    }
-    next();
+      if (response.status === 201) {
+        const createdBooking = await response.json();
+        dispatch(
+          saveBooking({
+            id: createdBooking?.id,
+            status: 'contact',
+            contact: { id: createdBooking?.contact.id, ...data },
+            events: eventSection?.events ?? [],
+            bundles: packages,
+            addons: addons,
+          })
+        );
+      }
+      next();
+    });
   };
 
   return (
@@ -137,11 +141,10 @@ const ContactStep = ({ next }: { next: () => void }) => {
           />
         </div>
 
-        <div className='flex justify-between'>
-          <Button type='button' disabled={true}>
-            Back
+        <div className='flex justify-end'>
+          <Button type='submit' disabled={isPending} className='flex justify-center items-center'>
+            {isPending ? <div className="w-6 h-6 border-4 border-gray-300 border-t-blue-600 rounded-full animate-spin" /> : 'Next'}
           </Button>
-          <Button type='submit'>Next</Button>
         </div>
       </form>
     </Form>

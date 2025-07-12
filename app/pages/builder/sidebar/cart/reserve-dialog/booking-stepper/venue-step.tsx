@@ -1,9 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { z } from 'zod';
-import {
-  selectSection,
-} from '~/store/config.selector';
+import { selectSection } from '~/store/config.selector';
 import { useAppDispatch, useAppSelector } from '~/store/hooks';
 import {
   Form,
@@ -28,6 +26,7 @@ import { Calendar } from '~/components/ui/calendar';
 import { putBooking } from '~/lib/api';
 import { useNavigate } from 'react-router';
 import { saveBooking } from '~/store/builder-slice';
+import { useTransition } from 'react';
 
 const formSchema = z.object({
   venues: z.array(
@@ -56,6 +55,7 @@ const VenueStep = ({ previous }: { previous: () => void }) => {
   const dispatch = useAppDispatch();
   const eventSection = useAppSelector(selectSection('event'));
   const booking = useAppSelector((state) => state.builder.booking);
+  const [isPending, startTransition] = useTransition();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -77,36 +77,38 @@ const VenueStep = ({ previous }: { previous: () => void }) => {
   });
 
   const onSubmitHandler = async (data: z.infer<typeof formSchema>) => {
-    const venues = data.venues.map((venue) => {
-      const slotBeginning = new Date(venue.slot);
-      if (venue.slotBeginning && venue.slotBeginning !== '') {
-        slotBeginning.setHours(parseInt(venue.slotBeginning.split(':')[0]));
-        slotBeginning.setMinutes(parseInt(venue.slotBeginning.split(':')[1]));
-        slotBeginning.setSeconds(0);
-      }
-      const slotEnding = new Date(venue.slot);
-      if (venue.slotEnding && venue.slotEnding !== '') {
-        slotEnding.setHours(parseInt(venue.slotEnding.split(':')[0]));
-        slotEnding.setMinutes(parseInt(venue.slotEnding.split(':')[1]));
-        slotEnding.setSeconds(0);
-      }
+    startTransition(async () => {
+      const venues = data.venues.map((venue) => {
+        const slotBeginning = new Date(venue.slot);
+        if (venue.slotBeginning && venue.slotBeginning !== '') {
+          slotBeginning.setHours(parseInt(venue.slotBeginning.split(':')[0]));
+          slotBeginning.setMinutes(parseInt(venue.slotBeginning.split(':')[1]));
+          slotBeginning.setSeconds(0);
+        }
+        const slotEnding = new Date(venue.slot);
+        if (venue.slotEnding && venue.slotEnding !== '') {
+          slotEnding.setHours(parseInt(venue.slotEnding.split(':')[0]));
+          slotEnding.setMinutes(parseInt(venue.slotEnding.split(':')[1]));
+          slotEnding.setSeconds(0);
+        }
 
-      return {
-        ...venue,
-        slotBeginning: slotBeginning.getTime(),
-        slotEnding: slotEnding.getTime(),
-      };
+        return {
+          ...venue,
+          slotBeginning: slotBeginning.getTime(),
+          slotEnding: slotEnding.getTime(),
+        };
+      });
+
+      await putBooking({
+        id: booking?.id,
+        status: 'venue',
+        venues,
+      });
+
+      dispatch(saveBooking({ ...booking!, status: 'venue', venues }));
+
+      await navigate('/summary');
     });
-    
-    await putBooking({
-      id: booking?.id,
-      status: 'venue',
-      venues,
-    });
-
-    dispatch(saveBooking({ ...booking!, status: 'venue', venues }));
-
-    await navigate('/summary');
   };
 
   return (
@@ -222,7 +224,13 @@ const VenueStep = ({ previous }: { previous: () => void }) => {
           <Button type='button' onClick={previous}>
             Back
           </Button>
-          <Button type='submit'>Submit</Button>
+          <Button type='submit' disabled={isPending}>
+            {isPending ? (
+              <div className='w-6 h-6 border-4 border-gray-300 border-t-blue-600 rounded-full animate-spin' />
+            ) : (
+              'Submit'
+            )}
+          </Button>
         </div>
       </form>
     </Form>
