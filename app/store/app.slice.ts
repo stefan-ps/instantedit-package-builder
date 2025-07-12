@@ -56,7 +56,7 @@ const appSlice = createSlice({
         }>
       ) => {
         state.configuration = action.payload;
-        state.activePreview = action.payload.sections[0].coverUrl;
+        state.activePreview = '/cover_video.mp4';
         state.loading = false;
       }
     );

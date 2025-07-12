@@ -57,7 +57,15 @@ export function EventConfigurator({
       } else {
         dispatch(insertBundle({ title, slug: slug, package: servicePackage }));
         if (servicePackage.preview) {
-          dispatch(setActivePreview(servicePackage.preview));
+          if(servicePackage.id === 33) {
+            dispatch(setActivePreview('/split-ceremony_only.mp4'));
+          } else if (servicePackage.id === 2) {
+            dispatch(setActivePreview('/split-wedding_and_reception.mp4'));
+          } else if (servicePackage.id === 3) {
+            dispatch(setActivePreview('/split-extended_coverage.mp4'));
+          } else {
+            dispatch(setActivePreview('/split-wedding_and_reception.mp4'));
+          }
         }
 
         setEventSelector(() => {

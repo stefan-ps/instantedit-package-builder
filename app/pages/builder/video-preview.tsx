@@ -47,26 +47,40 @@ const VideoPreview = ({
   const previewVideos = useMemo(
     () =>
       previews.map((p, index) => (
-        <ReactPlayer
-          key={p}
-          url={p}
-          playing
+        // <ReactPlayer
+        //   key={p}
+        //   url={p}
+        //   playing
+        //   loop
+        //   stopOnUnmount
+        //   controls={false}
+        //   width={'100%'}
+        //   height={index === 0 ? '100%' : 0}
+        //   config={{
+        //     playerOptions: {
+        //       transparent: true,
+        //       colors: ['000000', '00ADEF', 'FFFFFF', 'FFFFFF'],
+        //       initial_quality: '1080p',
+        //     },
+        //   }}
+        //   style={{
+        //     backgroundColor: 'transparent',
+        //     position: 'relative',
+        //   }}
+        //   onPlay={() => {
+        //     dispatch(setReady(true));
+        //     onReadyHandler();
+
+        //     if (index === previews.length - 1) {
+        //       setPreviews((prev) => prev.slice(-1));
+        //     }
+        //   }}
+        // />
+        <video
+          autoPlay
           loop
-          stopOnUnmount 
-          controls={false}
+          src={p}
           width={'100%'}
-          height={index === 0 ? '100%' : 0}
-          config={{
-            playerOptions: {
-              transparent: true,
-              colors: ['000000', '00ADEF', 'FFFFFF', 'FFFFFF'],
-              initial_quality: '1080p',
-            },
-          }}
-          style={{
-            backgroundColor: 'transparent',
-            position: 'relative',
-          }}
           onPlay={() => {
             dispatch(setReady(true));
             onReadyHandler();
@@ -91,6 +105,16 @@ const VideoPreview = ({
         className='w-full lg:w-auto lg:h-screen aspect-video bg-transparent'
       >
         {previewVideos}
+        {/* <video
+          autoPlay
+          loop
+          src={'/cover_video.mp4'}
+          width={'100%'}
+          onPlay={() => {
+            dispatch(setReady(true));
+            onReadyHandler();
+          }}
+        /> */}
       </div>
     </div>
   );
