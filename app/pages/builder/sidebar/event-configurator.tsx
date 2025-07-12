@@ -62,9 +62,9 @@ export function EventConfigurator({
           } else if (servicePackage.id === 2) {
             dispatch(setActivePreview('/split-wedding_and_reception.mp4'));
           } else if (servicePackage.id === 3) {
-            dispatch(setActivePreview('/split-extended_coverage.mp4'));
+            dispatch(setActivePreview('/split-wedding_reception_and_preceremony.mp4'));
           } else {
-            dispatch(setActivePreview('/split-wedding_and_reception.mp4'));
+            dispatch(setActivePreview('/split-extended_coverage.mp4'));
           }
         }
 
