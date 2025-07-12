@@ -25,6 +25,7 @@ import {
 import { Button } from '../ui/button';
 import { Check, ChevronsUpDown, Loader } from 'lucide-react';
 import { cn } from '~/lib/utils';
+import { Typography } from '../ui/typography';
 
 const GooglePlacesAutocomplete: React.ForwardRefRenderFunction<
   GooglePlacesAutocompleteHandle,
@@ -115,13 +116,24 @@ const GooglePlacesAutocomplete: React.ForwardRefRenderFunction<
             onChangeCapture={getPredictionsHandler}
           />
           <CommandList>
-            <CommandEmpty className='py-2 px-3 text-sm text-muted-foreground'>No known address found.</CommandEmpty>
+            <CommandEmpty className='py-2 px-3 text-sm text-muted-foreground'>
+              No known address found.
+            </CommandEmpty>
             {loading && (
               <div className='py-2 px-3 text-sm text-muted-foreground'>
                 <Loader className='h-4 w-4 animate-spin' />
               </div>
             )}
             <CommandGroup>
+              <CommandItem
+                value={'Not yet decided'}
+                onSelect={(currentValue) => {
+                  args.onSelect(currentValue);
+                  setOpen(false);
+                }}
+              >
+                <Typography>Not yet decided</Typography>
+              </CommandItem>
               {predictions.map((prediction) => (
                 <CommandItem
                   key={prediction.value}
