@@ -48,12 +48,14 @@ const VideoPreview = ({
     () =>
       previews.map((p, index) => (
         <video
+          key={index}
           autoPlay
           loop
           muted
           playsInline
           src={p}
           width={'100%'}
+          height={index === 0 ? '100%' : 0}
           onPlay={() => {
             dispatch(setReady(true));
             onReadyHandler();
@@ -75,7 +77,7 @@ const VideoPreview = ({
     >
       <div
         ref={videoContainerRef}
-        className='w-full lg:w-auto lg:h-screen aspect-video bg-transparent'
+        className='w-full lg:w-auto lg:h-screen aspect-video bg-black'
       >
         {previewVideos}
         {/* <video

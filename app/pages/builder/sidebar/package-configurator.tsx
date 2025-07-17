@@ -12,11 +12,10 @@ import { useAppDispatch, useAppSelector } from '~/store/hooks';
 import type {
   Section,
   Service,
-  Bundle,
   ServicePackageSection,
   ServiceBundle,
 } from '~/types/api';
-import { calculateBundlePrice, calculateServiceDiscount } from './utils';
+import { calculateServiceDiscount } from './utils';
 import ComparableContainer from './comparable/container';
 import { selectSection } from '~/store/config.selector';
 import LearnMore from './learn-more';
