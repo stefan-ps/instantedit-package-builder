@@ -52,6 +52,7 @@ const VideoPreview = ({
           url={p}
           playing
           loop
+          muted
           stopOnUnmount 
           controls={false}
           width={'100%'}
