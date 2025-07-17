@@ -9,6 +9,7 @@ import type {
 import { calculateBundlePrice, calculateServiceDiscount } from '../utils';
 import { useAppSelector } from '~/store/hooks';
 import { selectSection } from '~/store/config.selector';
+import { formatCurrency } from '~/lib/format';
 
 type Props = {
   title: string;
@@ -31,10 +32,7 @@ const PackageSummary = ({ item, title, addons }: Props) => {
           <Typography variant={'h3'}>{item.title}</Typography>
         </div>
         <Typography variant={'h3'}>
-          {new Intl.NumberFormat('en-US', {
-            style: 'currency',
-            currency: 'USD',
-          }).format(
+          {formatCurrency(
             calculateBundlePrice(
               {
                 price:
@@ -76,10 +74,7 @@ const PackageSummary = ({ item, title, addons }: Props) => {
             <Typography variant={'h3'}>{addon.title}</Typography>
           </div>
           <Typography variant={'h3'}>
-            {new Intl.NumberFormat('en-US', {
-              style: 'currency',
-              currency: 'USD',
-            }).format(addon.price)}
+            {formatCurrency(addon.price - calculateServiceDiscount(addon))}
           </Typography>
         </div>
       ))}

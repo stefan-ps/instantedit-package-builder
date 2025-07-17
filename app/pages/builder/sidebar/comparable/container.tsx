@@ -11,6 +11,7 @@ import { type Event, type Settings, type ServiceBundle } from '~/types/api';
 import { Button } from '~/components/ui/button';
 import { Typography } from '~/components/ui/typography';
 import { calculateBundlePrice } from '../utils';
+import { formatCurrency } from '~/lib/format';
 
 type Props = {
   title?: string;
@@ -51,10 +52,7 @@ const ComparableContainer = ({
             {bundles.map((bundle) => (
               <div key={bundle.id} className='text-center px-4 border-t pt-3'>
                 <Typography variant={'h4'}>
-                  {new Intl.NumberFormat('en-US', {
-                    style: 'currency',
-                    currency: 'USD',
-                  }).format(calculateBundlePrice(bundle, events, settings))}
+                  {formatCurrency(calculateBundlePrice(bundle, events, settings))}
                 </Typography>
                 <Typography variant={'small'} appearance={'default'}>
                   {bundle.title}

@@ -13,6 +13,7 @@ import { useMemo } from 'react';
 import { calculateBundlePrice, calculateServiceDiscount } from '../utils';
 import ReserveDialog from './reserve-dialog';
 import { selectSection, selectSections } from '~/store/config.selector';
+import { formatCurrency } from '~/lib/format';
 
 const CartCard = () => {
   const { settings } = useAppSelector((state) => state.app.configuration);
@@ -53,10 +54,7 @@ const CartCard = () => {
     [sections]
   );
 
-  const formattedTotal = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-  }).format(calculatedTotal);
+  const formattedTotal = formatCurrency(calculatedTotal);
 
   if (Object.values(sections).length === 0) {
     return;

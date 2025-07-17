@@ -6,6 +6,7 @@ import {
   AccordionTrigger,
 } from '~/components/ui/accordion';
 import { Typography } from '~/components/ui/typography';
+import { formatCurrency } from '~/lib/format';
 import { isServicePackage, type Bundle } from '~/types/api';
 
 type Props = { bundle: Bundle };
@@ -23,10 +24,7 @@ const BundleDetails = ({ bundle }: Props) => {
             <div className='flex-1 pl-2 flex flex-row items-center text-base font-normal'>
               <Typography>{bundle.title}</Typography>
               <Typography className='grow text-right'>
-                {new Intl.NumberFormat('en-US', {
-                  style: 'currency',
-                  currency: 'USD',
-                }).format(bundle.price)}
+                {formatCurrency(bundle.price)}
               </Typography>
             </div>
           </AccordionTrigger>

@@ -10,6 +10,7 @@ import BundleDetails from './bundle-details';
 import { Separator } from '~/components/ui/separator';
 import type { Bundle, EventBundle, Service } from '~/types/api';
 import { selectSection } from '~/store/config.selector';
+import { formatCurrency } from '~/lib/format';
 
 type Props = Booking;
 
@@ -76,10 +77,7 @@ const ServicesDetails = ({ events, bundles, addons }: Props) => {
           <div className='flex flex-row gap-3'>
             <Typography>{addon.title}</Typography>
             <Typography className='grow text-right'>
-              {new Intl.NumberFormat('en-US', {
-                style: 'currency',
-                currency: 'USD',
-              }).format(addon.price)}
+              {formatCurrency(addon.price)}
             </Typography>
           </div>
           <Separator />

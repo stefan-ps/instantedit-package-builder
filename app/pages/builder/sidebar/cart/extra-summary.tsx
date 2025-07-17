@@ -1,5 +1,6 @@
 import React from 'react';
 import { Typography } from '~/components/ui/typography';
+import { formatCurrency } from '~/lib/format';
 import type { Addon } from '~/types/api';
 
 type Props = {
@@ -19,10 +20,7 @@ const ExtraSummary = ({ title, addons }: Props) => {
             <Typography variant={'h3'}>{addon.title}</Typography>
           </div>
           <Typography variant={'h3'}>
-            {new Intl.NumberFormat('en-US', {
-              style: 'currency',
-              currency: 'USD',
-            }).format(addon.price)}
+            {formatCurrency(addon.price)}
           </Typography>
         </div>
       ))}

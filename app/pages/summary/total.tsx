@@ -13,6 +13,7 @@ import {
 } from '../builder/sidebar/utils';
 import { useAppSelector } from '~/store/hooks';
 import { selectSection } from '~/store/config.selector';
+import { formatCurrency } from '~/lib/format';
 
 const Total = ({ bundles, addons, events }: Booking) => {
   const settings = useAppSelector((store) => store.app.configuration.settings);
@@ -58,10 +59,7 @@ const Total = ({ bundles, addons, events }: Booking) => {
     <div className='flex flex-row justify-between items-center font-bold bg-gray-200 p-5'>
       <Typography>Total</Typography>
       <Typography>
-        {new Intl.NumberFormat('en-US', {
-          style: 'currency',
-          currency: 'USD',
-        }).format(calculatedTotal)}
+        {formatCurrency(calculatedTotal)}
       </Typography>
     </div>
   );
