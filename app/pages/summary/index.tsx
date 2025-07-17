@@ -12,6 +12,7 @@ const Summary = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const booking = useAppSelector((state) => state.builder.booking);
+  const { summaryImage } = useAppSelector((state) => state.app.configuration);
 
   useEffect(() => {
     if (!booking) {
@@ -23,7 +24,7 @@ const Summary = () => {
     if (booking) {
       const response = await patchBooking({
         id: booking.id,
-        status: 'requested'
+        status: 'requested',
       });
       if (response.status === 200) {
         dispatch(resetConfig());
@@ -38,15 +39,22 @@ const Summary = () => {
   }
 
   return (
-    <div className='h-screen md:flex flex-row flex-grow'>
-      <div className='lg:basis-5/12 p-5 flex flex-col gap-10'>
+    <div className='h-screen md:flex flex-row'>
+      <div className='flex-1 p-5 flex flex-col gap-10'>
         <img src='/raj_logo.svg' height={100} width={200} />
         <ContactDetails {...booking} />
         <ServicesDetails {...booking} />
         <Total {...booking} />
         <Button onClick={onReserveHandler}>Request Reservation</Button>
       </div>
-      <div className='basis-0 lg:basis-7/12 bg-blue-200'></div>
+      <div className='hidden flex-5 lg:flex flex-row'>
+        <img
+          src={summaryImage}
+          style={{
+            objectFit: 'cover',
+          }}
+        />
+      </div>
     </div>
   );
 };

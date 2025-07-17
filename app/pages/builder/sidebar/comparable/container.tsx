@@ -7,7 +7,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '~/components/ui/dialog';
-import { type Event, type Bundle, type Settings, type ServiceBundle } from '~/types/api';
+import { type Event, type Settings, type ServiceBundle } from '~/types/api';
 import { Button } from '~/components/ui/button';
 import { Typography } from '~/components/ui/typography';
 import { calculateBundlePrice } from '../utils';

@@ -8,13 +8,16 @@ import type { Section, Settings } from '~/types/api';
 export const fetchAppConfiguration = createAsyncThunk(
   'app/configuration',
   async () => {
-    const product = await fetch(`${import.meta.env.VITE_API}/api/section`);
+    const product = await fetch(`${import.meta.env.VITE_API}/api/application/weddings`);
     return await product.json();
   }
 );
 
 type AppState = {
   configuration: {
+    title: string;
+    slug: string;
+    summaryImage: string;
     sections: Section[];
     settings: Settings;
   };
@@ -53,6 +56,9 @@ const appSlice = createSlice({
         action: PayloadAction<{
           sections: Section[];
           settings: Settings;
+          title: string;
+          slug: string;
+          summaryImage: string;
         }>
       ) => {
         state.configuration = action.payload;
